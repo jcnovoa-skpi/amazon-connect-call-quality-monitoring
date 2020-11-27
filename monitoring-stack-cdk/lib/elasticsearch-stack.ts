@@ -51,8 +51,6 @@ export class ElasticSearchStack extends cfn.NestedStack {
     this.cognitoPools = this.createCognitoPools(suffix);
     const iamResources = this.createIamResources(this.cognitoPools.identityPool);
     this.elasticsearchDomain = this.createElasticsearchDomain(
-      this.ccpName,
-      suffix,
       this.cognitoPools,
       iamResources,
     );
@@ -125,13 +123,10 @@ export class ElasticSearchStack extends cfn.NestedStack {
   }
 
   private createElasticsearchDomain(
-    ccpName: string,
-    suffix: string,
     cognitoPools: CognitoPoolStore,
     iamResources: ElasticsearchStackIamResources,
   ) {
     const elasticsearchDomain = new elasticsearch.CfnDomain(this, 'ElasticsearchDomain', {
-      domainName: ccpName + suffix,
       accessPolicies: iamResources.elasticsearchAccessPolicy,
       encryptionAtRestOptions: {
         enabled: true,
@@ -152,7 +147,7 @@ export class ElasticSearchStack extends cfn.NestedStack {
           availabilityZoneCount: 3,
         },
       },
-      elasticsearchVersion: '7.4',
+      elasticsearchVersion: '7.9',
     });
 
     elasticsearchDomain.addPropertyOverride('CognitoOptions.Enabled', true);

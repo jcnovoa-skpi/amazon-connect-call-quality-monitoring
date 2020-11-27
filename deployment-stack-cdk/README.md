@@ -3,24 +3,14 @@
 ### CCP URL
 This parameter is the URL you use to access the Contact Control Panel. For example, if my instance is named 'monitoring-test' it would be https://monitoring-test.awsapps.com/connect/ccp-v2
 
-### Instance ID
-The instance ID can be found by clicking on your instance's name in the Amazon Connect Console. Click on the instance of your region below, and then click on the name of the instance. 
-| [Virginia](https://console.aws.amazon.com/connect/home?region=us-east-1) 	| [Oregon](https://console.aws.amazon.com/connect/home?region=us-west-2) 	| [Singapore](https://console.aws.amazon.com/connect/home?region=ap-southeast-1) 	| [Sydney](https://console.aws.amazon.com/connect/home?region=ap-southeast-2) 	| [Tokyo](https://console.aws.amazon.com/connect/home?region=ap-northeast-1) 	| [Frankfurt](https://console.aws.amazon.com/connect/home?region=eu-central-1) 	| [London](https://console.aws.amazon.com/connect/home?region=eu-west-1) 	|
-|--------------------------------------------------------------------------	|------------------------------------------------------------------------	|--------------------------------------------------------------------------------	|-----------------------------------------------------------------------------	|----------------------------------------------------------------------------	|------------------------------------------------------------------------------	|------------------------------------------------------------------------	|
-
-After clicking on the name of the instance, you'll find the instance ID in the instance ARN. For example with the ARN:
-
-* arn:aws:connect:us-west-2:287087860234:instance/db454ef4-882a-4d77-8cad-15b8fc0d61e3
-
-The instance ID is
-
-* db454ef4-882a-4d77-8cad-15b8fc0d61e3
+### SAML URL
+If you use SAML to authenticate users, enter your SAML URL. If not, leave this field blank.
 
 Then click deploy! For a guide with pictures please follow the link to our  [GitHub Repo](https://github.com/amazon-connect/amazon-connect-call-quality-monitoring)
 
 ## Post-Deploy Steps
 ### Whitelisting your CloudFront URL
-To access the custom metrics-enabled CCP, we also need to whitelist the CloudFront URL from our CCP instance. We can do this from the AWS Console for Connect. From the console where you found your Instance ID
+The custom, metrics-enabled softphone is hosted on Cloudfront. To access the custom CCP, we also need to whitelist the CloudFront URL from our Connect instance. We can do this from the AWS Console for Connect. From the console where you found your Instance ID
  * Click Application Integration on the left hand side
  * Copy the value from the [CloudFront URL Parameter](https://console.aws.amazon.com/systems-manager/parameters/CloudfrontUrl/description?&tab=Table)
  * Click 'Add Origin'

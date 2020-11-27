@@ -1,25 +1,25 @@
 {
-    "version": "0.2",
-    "phases": {
-      "install": {
-        "commands": [
-          "npm install -g aws-cdk",
-          "npm install -g typescript",
-          "cdk --version",
-          "export ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`",
-          "cdk bootstrap aws://$ACCOUNT_ID/$AWS_REGION",
-          "mkdir project && cd project"
-        ]
-      },
-      "build": {
-        "commands": [
-          "aws s3 cp s3://amazon-connect-monitoring-solution-prod/monitoring-solution.zip monitoring-solution.zip",
-          "unzip monitoring-solution.zip",
-          "ls -la",
-          "cd monitoring-stack-cdk",
-          "npm install",
-          "cdk deploy --require-approval never"
-        ]
-      }
+  "version": "0.2",
+  "phases": {
+    "install": {
+      "commands": [
+        "npm install -g aws-cdk",
+        "npm install -g typescript",
+        "cdk --version",
+        "export ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`",
+        "cdk bootstrap aws://$ACCOUNT_ID/$AWS_REGION",
+        "mkdir project && cd project"
+      ]
+    },
+    "build": {
+      "commands": [
+        "aws s3 cp s3://amazon-connect-monitoring-solution-prod/monitoring-solution.zip monitoring-solution.zip",
+        "unzip monitoring-solution.zip",
+        "ls -la",
+        "cd monitoring-stack-cdk",
+        "npm install",
+        "cdk deploy --require-approval never"
+      ]
     }
+  }
 }

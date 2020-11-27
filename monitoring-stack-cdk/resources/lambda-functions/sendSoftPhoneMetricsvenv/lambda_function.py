@@ -61,6 +61,7 @@ def format_event(body):
         yield {
             "_index": "softphonestreamstats-",
             "_type": "document",
+            "pipeline": "stats_dailyindex",
             "doc": {
                     **body,
                     "softphoneStreamType": stream['softphoneStreamType'],

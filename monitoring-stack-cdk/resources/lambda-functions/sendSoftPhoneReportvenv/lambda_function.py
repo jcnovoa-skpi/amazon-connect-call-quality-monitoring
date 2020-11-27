@@ -10,16 +10,19 @@ import boto3
 
 def lambda_handler(event, context):    
     print(event)
-    body = json.loads(event['body'])
+    doc = json.loads(event['body'])
 
-    body['agentPublicIp'] = event['requestContext']['identity']['sourceIp']
-    callConfig = json.loads(body.pop('callConfigJson'))
-    body['signalingEndpoint'] = callConfig['signalingEndpoint']
-    add_ice_servers(body, callConfig)
+    doc['agentPublicIp'] = event['requestContext']['identity']['sourceIp']
+    callConfig = json.loads(doc.pop('callConfigJson'))
+    doc['signalingEndpoint'] = callConfig['signalingEndpoint']
+    add_ice_servers(doc, callConfig)
+    doc['timestamp'] = doc['report']['callEndTime']
     
+    body = {}
+    body['doc'] = doc
     #TO DO make the numbers in the report from string to numbers
     es = generate_new_signed_connection()
-    es.index(index='softphonecallreport-', doc_type='document', body=body)
+    es.index(index='softphonecallreport-', doc_type='document', body=body, pipeline="reports_dailyindex")
     print('Successfully uploaded call report')
 
     return {
@@ -47,11 +50,11 @@ def generate_new_signed_connection():
         connection_class = RequestsHttpConnection
     )
 
-def add_ice_servers(body, callConfig):
+def add_ice_servers(doc, callConfig):
     iceServersConfig = callConfig['iceServers']
     iceServers = []
     for item in iceServersConfig:
         iceServers.append(str(item['urls'][0]).replace("?transport=udp", ""))
     iceServers = ", ".join(iceServers)
-    body['iceServers'] = iceServers
-    return body
+    doc['iceServers'] = iceServers
+    return doc

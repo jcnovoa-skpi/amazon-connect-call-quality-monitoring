@@ -35,7 +35,7 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
       buildSpec: codebuild.BuildSpec.fromObject(buildSpecJson),
       environmentVariables: {
         "CCP_URL": {value: ccpUrlParameter.valueAsString},
-        "SAML_URL": {value: ccpUrlParameter.valueAsString},
+        "SAML_URL": {value: samlUrlParameter.valueAsString},
       },
     });
 

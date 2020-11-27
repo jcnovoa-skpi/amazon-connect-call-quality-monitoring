@@ -1,10 +1,9 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
-
 window.myCPP = window.myCPP || {};
 window.agentHierarchy = window.agentHierarchy || {};
+window.apiUrl = document.currentScript.getAttribute('apiGatewayUrl');
 const ccpUrl = document.currentScript.getAttribute('ccpUrl');
-const apiUrl = document.currentScript.getAttribute('apiGatewayUrl');
 const samlUrl = document.currentScript.getAttribute('samlUrl');
 const instanceRegion = document.currentScript.getAttribute('region');
 const ccpParams = {
@@ -89,7 +88,7 @@ getLocalIP().then((data) => { localIp = data; });
 
 function esApiGatewayRequest(httpVerb, endpoint, jsonForEvent) {
   const xhr = new XMLHttpRequest();
-  xhr.open(httpVerb, `${apiUrl}${endpoint}`, true);
+  xhr.open(httpVerb, `${window.apiUrl}${endpoint}`, true);
   xhr.setRequestHeader('Content-Type', 'application/json');
   if (jsonForEvent && jsonForEvent !== 'undefined' && jsonForEvent !== null) {
     xhr.send(JSON.stringify({
@@ -273,38 +272,50 @@ function stopJobsAndReport(sessionReport) {
   sendSoftphoneMetrics();
 }
 
-connect.core.initCCP(containerDiv, ccpParams);
-connect.core.initSoftphoneManager({ allowFramedSoftphone: true });
-connect.core.getEventBus().subscribe(connect.EventType.API_METRIC, (event) => {
-  console.log(JSON.stringify(event));
-  const date = new Date();
-  const timestamp = date.toJSON();
-  event.timestamp = timestamp;
-  metriclist.push(event);
-});
-connect.core.onSoftphoneSessionInit(({ connectionId }) => {
-  const softphoneManager = connect.core.getSoftphoneManager();
-  if (softphoneManager) {
-    // access session
-    const session = softphoneManager.getSession(connectionId);
-    console.log(`Session on init ${session}`);
-    const agent = new connect.Agent();
-    const contact = agent.getContacts()[0];
-    console.log(`Contact on softphone session init ${contact}`);
-    session.onSessionFailed = (rtcSession, reason) => {
-      console.log(`Session failed for reason: ${reason}`);
-      stopJobsAndReport(rtcSession.sessionReport);
-    };
-    session.onSessionConnected = (rtcSession) => {
-      console.log(`Detected new session ${rtcSession}`);
-      startStatsCollectionJob(rtcSession);
-      startStatsReportingJob();
-    };
-    session.onSessionCompleted = (rtcSession) => {
-      console.log(`Session completed ${rtcSession}`);
-      stopJobsAndReport(rtcSession.sessionReport);
-    };
+function initCustomImplementation(div, apiUrl) {
+  if(apiUrl && apiUrl != undefined) {
+    window.apiUrl = apiUrl;
   }
-});
+  if (!window.connect.core.initialized) {
+    connect.core.initCCP(div, ccpParams);
+  }
+  connect.core.initSoftphoneManager({ allowFramedSoftphone: true });
+  connect.core.getEventBus().subscribe(connect.EventType.API_METRIC, (event) => {
+    console.log(JSON.stringify(event));
+    const date = new Date();
+    const timestamp = date.toJSON();
+    event.timestamp = timestamp;
+    metriclist.push(event);
+  });
+  connect.core.onSoftphoneSessionInit(({ connectionId }) => {
+    const softphoneManager = connect.core.getSoftphoneManager();
+    if (softphoneManager) {
+      // access session
+      const session = softphoneManager.getSession(connectionId);
+      console.log(`Session on init ${session}`);
+      const agent = new connect.Agent();
+      const contact = agent.getContacts()[0];
+      console.log(`Contact on softphone session init ${contact}`);
+      session.onSessionFailed = (rtcSession, reason) => {
+        console.log(`Session failed for reason: ${reason}`);
+        stopJobsAndReport(rtcSession.sessionReport);
+      };
+      session.onSessionConnected = (rtcSession) => {
+        console.log(`Detected new session ${rtcSession}`);
+        startStatsCollectionJob(rtcSession);
+        startStatsReportingJob();
+      };
+      session.onSessionCompleted = (rtcSession) => {
+        console.log(`Session completed ${rtcSession}`);
+        stopJobsAndReport(rtcSession.sessionReport);
+      };
+    }
+  });
+  connect.agent(subscribeToAgentEvents);
+}
 
-connect.agent(subscribeToAgentEvents);
+// If the script was loaded with the ccpUrl attribute, we are likely using the
+// generated Custom CCP
+if(document.currentScript.getAttribute('ccpUrl')) {
+  initCustomImplementation(containerDiv, window.apiUrl);
+}
