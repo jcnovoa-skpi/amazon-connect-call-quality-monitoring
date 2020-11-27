@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<html lang="en" class="js csstransforms3d">
+<head>
+  <meta charset="utf-8">
+  <meta property="og:title" content="My AWS Workshop" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="generator" content="Hugo 0.75.1" />
+  <meta name="description" content="Monitor call quality on Amazon Connect">
+<meta name="author" content="Kun Qian, Robertson Taylor">
+
+  <link rel="shortcut icon" href="https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" type="image/ico" />
+<link rel="icon" href="https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" type="image/ico" />
+
+  <title>Application Architecture :: My AWS Workshop</title>
+
+  
+  <link href="../css/nucleus.css" rel="stylesheet">
+  <link href="../css/fontawesome-all.min.css" rel="stylesheet">
+  <link href="../css/hybrid.css" rel="stylesheet">
+  <link href="../css/featherlight.min.css" rel="stylesheet">
+  <link href="../css/perfect-scrollbar.min.css" rel="stylesheet">
+  <link href="../css/auto-complete.css" rel="stylesheet">
+  <link href="../css/atom-one-dark-reasonable.css" rel="stylesheet">
+  <link href="../css/theme.css" rel="stylesheet">
+  <link href="../css/hugo-theme.css" rel="stylesheet">
+  
+  <link href="../css/theme-aws.css" rel="stylesheet">
+  
+
+  <script src="../js/jquery-3.3.1.min.js"></script>
+
+  <style>
+    :root #header + #content > #left > #rlblock_left{
+        display:none !important;
+    }
+    
+      :not(pre) > code + span.copy-to-clipboard {
+          display: none;
+      }
+    
+  </style>
+  
+</head>
+
+<body class="" data-url="../en/application-architecture.html">
+  <nav id="sidebar" class="">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+    <a href="../" title="Go home">
+        <img style="vertical-align:middle" src="../images/logo.png" height="70px" />
+    </a>
+</div>
+
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../js/lunr.min.js"></script>
+<script type="text/javascript" src="../js/auto-complete.js"></script>
+<script type="text/javascript">
+    
+        var baseurl = "\/en";
+    
+</script>
+<script type="text/javascript" src="../js/search.js"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/deployment-guide.html" title="Deployment Guide" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/deployment-guide.html">
+          <b>1. </b>Deployment Guide
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/user-guide.html" title="User Guide" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/user-guide.html">
+          <b>2. </b>User Guide
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/application-architecture.html" title="Application Architecture" class="dd-item 
+        parent
+        active
+        
+        ">
+      <a href="../en/application-architecture.html">
+          <b>3. </b>Application Architecture
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/data-model.html" title="Data Model" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/data-model.html">
+          <b>4. </b>Data Model
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/operations-guide.html" title="Operations Guide" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/operations-guide.html">
+          <b>5. </b>Operations Guide
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/anomaly-detection.html" title="Anomaly Detection" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/anomaly-detection.html">
+          <b>6. </b>Anomaly Detection
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+      
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+
+    <a href="https://aws.amazon.com/privacy/?nc1=f_pr">Privacy</a> | <a href="https://aws.amazon.com/terms/?nc1=f_pr">Site Terms</a> | © 2020, Amazon Web Services, Inc. or its affiliates. All rights reserved. 
+
+</left>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+  <section id="body">
+    <div id="overlay"></div>
+    <div class="padding highlightable">
+      
+      <div>
+        <div id="top-bar">
+          
+          
+          <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+            <span id="sidebar-toggle-span">
+              <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                <i class="fa fa-bars"></i>
+              </a>
+            </span>
+            
+            <span class="links">
+              
+          
+          
+          
+          
+          
+          
+          <a href='../en/'>Monitoring call quality on Amazon Connect</a> > Application Architecture
+          
+          
+          
+          
+            </span>
+          </div>
+          
+        </div>
+      </div>
+      
+
+      
+      <div id="chapter">
+        
+        <div id="body-inner">
+          <h1>Application Architecture</h1>
+          
+          
+
+
+
+	
+<figure>
+	<img src="../en/application-architecture/Monitoring%20Architecture.jpg?classes=shadow&width=60pc" alt="Application Architecture" />
+</figure>
+<h2 id="frontend">Frontend</h2>
+<p>The frontend of this solution is a custom static website which embeds the Amazon Connect softphone through an HTML element called an iframe. <a href="https://www.w3.org/TR/2011/WD-html5-20110525/the-iframe-element.html" target="_blank">For more info on iFrames please refer to this</a>. This iframe allows This custom webpage leverages two open source Javascript libraries to access the underlining WebRTC connection and collect the statistics.</p>
+<p>Every 30 seconds, the custom website sends the data collected to an API Gateway endpoint. API Gateway forwards the data to your Lambda function and indexes the data into the Elastic Search cluster in your account.</p>
+<p>The frontend consist of the following files</p>
+<ul>
+<li>connect-streams.js
+<ul>
+<li>The Connect Streams library which allows you to create custom softphone implementations and consume service events like agent state changes and completed contacts.</li>
+</ul>
+</li>
+<li>connect-rtc.js
+<ul>
+<li>The Connect RTC library that allows you to interact with the underlying WebRTC objects.</li>
+</ul>
+</li>
+<li>connect-custom-implementation.js
+<ul>
+<li>The code used by this solution to use connect-streams.js and connect-rtc.js to collect softphone statistics, api latency statistics, and softphone call reports.</li>
+<li>It aggregates the metrics and sends to an API Gateway that is deployed in the SAR app.</li>
+</ul>
+</li>
+<li>index.html
+<ul>
+<li>The HTML for the custom softphone webpage. Sets the variables from the deployed solution (API Gateway URL, SAML URL, CCP URL) after being dynamically generated as part of a CloudFormation Custom Resource.</li>
+</ul>
+</li>
+</ul>
+<h3 id="amazon-cognito">Amazon Cognito</h3>
+<p>Amazon Cognito User Pools are used to authenticate users and authorize access to the Kibana Dashboard. The CloudFormation Output has the URL to create users in the User Pool. You should create users for the people who require access to dashboards and operational data, for instance Call Center Managers or Operations Engineers.</p>
+<h3 id="aws-lambda">AWS Lambda</h3>
+<p>AWS Lambda is used extensively throughout the solution to provide a serverless compute backend to bulk upload data to Amazon ElasticSearch. There are three Lambda functions that are core to the application, they are invoked by API Gateway.</p>
+<ul>
+<li>API Metric Pusher
+<ul>
+<li>Uploads the TCP API latency data to Amazon ElasticSearch.</li>
+</ul>
+</li>
+<li>Softphone Stream Stats Pusher
+<ul>
+<li>Uploads the batched softphone stream statistics in a per agent, per contact, 30 second window to Amazon Elasticsearch. Enriches the data with contact specific information useful for dashboarding and troubleshooting. Uses the API Gateway External IP to add the agent’s public IP address to the data. WebRTC signalling information is cleaned and provided as well.</li>
+</ul>
+</li>
+<li>Softphone Call Report Pusher
+<ul>
+<li>Uploads the call report for a completed contact to Amazon ElasticSearch. Uses the API Gateway External IP to add public IP address to the data. WebRTC signalling information is also cleaned and provided.</li>
+</ul>
+</li>
+</ul>
+<h3 id="amazon-api-gateway">Amazon API Gateway</h3>
+<p>Amazon API Gateway is the serverless API which communicates with the backend AWS Lambda functions using Lambda Proxy method requests. It restricts access using Cross-site request forgery (CSRF), specifying your custom streams distribution as the source. If you use a Custom Domain Name for your webpage, be sure to modify the CSRF restrictions.</p>
+<h3 id="amazon-cloudfront">Amazon CloudFront</h3>
+<p>Amazon CloudFront is the content delivery network used to serve our static web content. Agents can use the custom softphone by visiting the CloudFront URL.</p>
+<h3 id="amazon-s3">Amazon S3</h3>
+<p>Amazon S3 stores the static files served by Amazon Cloudfront.</p>
+<h3 id="amazon-elasticsearch">Amazon ElasticSearch</h3>
+<p>Amazon ElasticSearch is used as the search layer that allows you to perform complex searches over the collected quality metrics and call reports. Amazon ElasticSearch also comes with Kibana. Kibana provides a user friendly web interface for searching along with dashboards and alerts.</p>
+<p>Dashboards are the critical feature enabling technical and non technical users to gain near-realtime insight into call quality issues. The solution creates dashboards enabling insights on a queue level, routing profile level, or on agent hierarchy. Users are able to modify existing dashboards and create new dashboards depending on their business needs.</p>
+<p>The initial Kibana configuration is imported from the export.ndjson file as part of the CloudFormation stack. Modifications to the Kibana dashboard can be exported from Kibana, and this export can replace the export.ndjson retrieved from the solution artifact bucket if you wish to redeploy the Template after modification.</p>
+<p>The initial ElasticSearch configuration uses 3 c5.large instances and 3 m5.large instances to enable high availability, node failure, rolling updates, and instance resizing.</p>
+
+
+
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+            </div> 
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../en/user-guide.html" title="User Guide"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../en/data-model.html" title="Data Model" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../js/clipboard.min.js"></script>
+    <script src="../js/perfect-scrollbar.min.js"></script>
+    <script src="../js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="../js/jquery.sticky.js"></script>
+    <script src="../js/featherlight.min.js"></script>
+    <script src="../js/html5shiv-printshiv.min.js"></script>
+    <script src="../js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../js/modernizr.custom-3.6.0.js"></script>
+    <script src="../js/learn.js"></script>
+    <script src="../js/hugo-learn.js"></script>
+
+    <link href="../mermaid/mermaid.css" rel="stylesheet" />
+    <script src="../mermaid/mermaid.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <div id = 'kinesisStreamName' title = ""/></div>
+<div id = 'cognitoPoolId' title = ""/></div>
+<div id = 'awsRegion' title = ""/></div>
+<div id = 'contentId' title = ""/></div>
+<div id = 'language' title = "en"/></div>
+<div id = 'versions' title = ""/></div>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+<script src="../js/kinesis.js"></script>
+  </body>
+</html>

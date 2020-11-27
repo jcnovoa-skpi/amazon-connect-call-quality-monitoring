@@ -1,0 +1,28 @@
+[
+	{	"pageTitle": "Index",
+		"relativePagePath": "/en/"
+	},
+	{
+		"pageTitle": "Deployment Guide",
+		"relativePagePath": "/en/deployment-guide.html"
+	},
+	{
+		"pageTitle": "User Guide",
+		"relativePagePath": "/en/user-guide.html"
+	},
+	{
+		"pageTitle": "Application Architecture",
+		"relativePagePath": "/en/application-architecture.html"
+	},
+	{
+		"pageTitle": "Data Model",
+		"relativePagePath": "/en/data-model.html"
+	},
+	{
+		"pageTitle": "Operations Guide",
+		"relativePagePath": "/en/operations-guide.html"
+	},
+	{
+		"pageTitle": "Anomaly Detection",
+		"relativePagePath": "/en/anomaly-detection.html"
+	}]

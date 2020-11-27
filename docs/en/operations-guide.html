@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<html lang="en" class="js csstransforms3d">
+<head>
+  <meta charset="utf-8">
+  <meta property="og:title" content="My AWS Workshop" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="generator" content="Hugo 0.75.1" />
+  <meta name="description" content="Monitor call quality on Amazon Connect">
+<meta name="author" content="Kun Qian, Robertson Taylor">
+
+  <link rel="shortcut icon" href="https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" type="image/ico" />
+<link rel="icon" href="https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" type="image/ico" />
+
+  <title>Operations Guide :: My AWS Workshop</title>
+
+  
+  <link href="../css/nucleus.css" rel="stylesheet">
+  <link href="../css/fontawesome-all.min.css" rel="stylesheet">
+  <link href="../css/hybrid.css" rel="stylesheet">
+  <link href="../css/featherlight.min.css" rel="stylesheet">
+  <link href="../css/perfect-scrollbar.min.css" rel="stylesheet">
+  <link href="../css/auto-complete.css" rel="stylesheet">
+  <link href="../css/atom-one-dark-reasonable.css" rel="stylesheet">
+  <link href="../css/theme.css" rel="stylesheet">
+  <link href="../css/hugo-theme.css" rel="stylesheet">
+  
+  <link href="../css/theme-aws.css" rel="stylesheet">
+  
+
+  <script src="../js/jquery-3.3.1.min.js"></script>
+
+  <style>
+    :root #header + #content > #left > #rlblock_left{
+        display:none !important;
+    }
+    
+      :not(pre) > code + span.copy-to-clipboard {
+          display: none;
+      }
+    
+  </style>
+  
+</head>
+
+<body class="" data-url="../en/operations-guide.html">
+  <nav id="sidebar" class="">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+    <a href="../" title="Go home">
+        <img style="vertical-align:middle" src="../images/logo.png" height="70px" />
+    </a>
+</div>
+
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../js/lunr.min.js"></script>
+<script type="text/javascript" src="../js/auto-complete.js"></script>
+<script type="text/javascript">
+    
+        var baseurl = "\/en";
+    
+</script>
+<script type="text/javascript" src="../js/search.js"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/deployment-guide.html" title="Deployment Guide" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/deployment-guide.html">
+          <b>1. </b>Deployment Guide
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/user-guide.html" title="User Guide" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/user-guide.html">
+          <b>2. </b>User Guide
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/application-architecture.html" title="Application Architecture" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/application-architecture.html">
+          <b>3. </b>Application Architecture
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/data-model.html" title="Data Model" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/data-model.html">
+          <b>4. </b>Data Model
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/operations-guide.html" title="Operations Guide" class="dd-item 
+        parent
+        active
+        
+        ">
+      <a href="../en/operations-guide.html">
+          <b>5. </b>Operations Guide
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/anomaly-detection.html" title="Anomaly Detection" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../en/anomaly-detection.html">
+          <b>6. </b>Anomaly Detection
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+      
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+
+    <a href="https://aws.amazon.com/privacy/?nc1=f_pr">Privacy</a> | <a href="https://aws.amazon.com/terms/?nc1=f_pr">Site Terms</a> | © 2020, Amazon Web Services, Inc. or its affiliates. All rights reserved. 
+
+</left>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+  <section id="body">
+    <div id="overlay"></div>
+    <div class="padding highlightable">
+      
+      <div>
+        <div id="top-bar">
+          
+          
+          <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+            <span id="sidebar-toggle-span">
+              <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                <i class="fa fa-bars"></i>
+              </a>
+            </span>
+            
+            <span class="links">
+              
+          
+          
+          
+          
+          
+          
+          <a href='../en/'>Monitoring call quality on Amazon Connect</a> > Operations Guide
+          
+          
+          
+          
+            </span>
+          </div>
+          
+        </div>
+      </div>
+      
+
+      
+      <div id="chapter">
+        
+        <div id="body-inner">
+          <h1>Operations Guide</h1>
+          
+          
+
+
+
+	<h2 id="elastic-search-operations">Elastic Search Operations</h2>
+<p>The initial ElasticSearch configuration uses 3 c5.large instances and 3 m5.large instances to enable high availability, node failure, rolling updates, and instance resizing. Depending your use case you may resize the Elastic Search cluster to suit your business needs. For more details please see the documentation here:</p>
+<p><a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/sizing-domains.html">https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/sizing-domains.html</a></p>
+<h3 id="index-rotation">Index rotation</h3>
+<p>The solution creates daily indexes for the data that is inserted into the Elastic Search instance. These daily indexes allow you to move the data to more cost-effective storage such as UltraWarm for Amazon Elastic Search, or delete it altogether through index state management policies.</p>
+<p>For more details on how to implement UltraWarm please find it here and more on index state management here.</p>
+<p>This document covers <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/ultrawarm.html" target="_blank">UltraWarm</a> storage and<a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/ism.html" target="_blank">Index State Management.</a></p>
+<h3 id="cloudwatch-alarms">Cloudwatch Alarms</h3>
+<p>We recommend creating cloudwatch alarms different areas of the solution. For Elasticsearch please find the best practice <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/cloudwatch-alarms.html" target="_blank">guide here for creating Cloudwatch alarms</a>.</p>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h2 id="elastic-search">Elastic Search</h2>
+<p>This <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html" target="_blank">document</a> describes how to identify and solve common Amazon Elasticsearch Service issues. Consult the information in this document before contacting <a href="https://aws.amazon.com/premiumsupport/" target="_blank">AWS Support</a>.
+<a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html">https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html</a></p>
+<h2 id="lambda">Lambda</h2>
+<p>Below are useful resources to help troubleshoot AWS Lambda related issues:</p>
+<p>This document describes how to monitor the Lambda function in the AWS Lambda console:
+<a href="https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions-access-metrics.html">https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions-access-metrics.html</a></p>
+<p>This document describes the relevant AWS Lambda metrics in Cloudwatch Metrics
+<a href="https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics.html">https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics.html</a></p>
+<p>This docuemnt describes how to troubleshoot AWS Lambda functions by looking at the Cloudwatch Logs
+<a href="https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html">https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html</a></p>
+<h2 id="api-gateway">API Gateway</h2>
+<p>The solution deploys an API Gateway and by defult it restricts access using Cross-site request forgery (CSRF). This is done by a CORS header configured in the Lambda functions.</p>
+<p>If you use a Custom Domain Name for your webpage, be sure to modify the CSRF restrictions in the Lambda Function code. Specifically you would have to do this for all the Lambda functions:</p>
+<ul>
+<li>API Metric Pusher</li>
+<li>Softphone Stream Stats Pusher</li>
+<li>Softphone Call Report Pusher</li>
+</ul>
+<h2 id="frontend">Frontend</h2>
+<p>If you are not seeing data in the backend, please open the developer tools in your browser and open the network tab.</p>
+<p><em>Google Chrome</em></p>
+<ol>
+<li>In the browser, at the top right, choose <strong>Customize and control Google Chrome</strong>.</li>
+<li>Pause on <strong>More tools</strong>, and then choose <strong>Developer tools</strong>.</li>
+<li>With DevTools open in the browser, choose the <strong>Network</strong> panel.</li>
+<li>Select the <strong>Preserve log</strong> check box.</li>
+<li>Choose <strong>Clear</strong> to clear all current network requests.</li>
+</ol>
+<p>Mozilla Firefox</p>
+<ol>
+<li>In the browser, at the top right, choose Open menu.</li>
+<li>Choose Web Developer.</li>
+<li>In the Web Developer menu, choose Network. (In some versions of Firefox, the Web Developer menu is in the Tools menu.)</li>
+<li>On the Network Monitor, select the Persist Logs check box.</li>
+<li>Choose the trash can icon (Clear) to clear all current network requests.</li>
+</ol>
+<p>Make a call using the CCP and look at the network request. If you see any row that is not 200, follow the network request through to the endpoint API Gateway and check the Lambda function logs.</p>
+<p>For example, if the network request for “apimetrics” does not return 200, look at the Lambda function logs for the “API Metric Pusher“ function.</p>
+
+<figure>
+	<img src="../en/operations-guide/Frontend-website.png?classes=shadow&width=60pc" alt="Frontend" />
+</figure>
+
+
+
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+            </div> 
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../en/data-model.html" title="Data Model"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../en/anomaly-detection.html" title="Anomaly Detection" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../js/clipboard.min.js"></script>
+    <script src="../js/perfect-scrollbar.min.js"></script>
+    <script src="../js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="../js/jquery.sticky.js"></script>
+    <script src="../js/featherlight.min.js"></script>
+    <script src="../js/html5shiv-printshiv.min.js"></script>
+    <script src="../js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../js/modernizr.custom-3.6.0.js"></script>
+    <script src="../js/learn.js"></script>
+    <script src="../js/hugo-learn.js"></script>
+
+    <link href="../mermaid/mermaid.css" rel="stylesheet" />
+    <script src="../mermaid/mermaid.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <div id = 'kinesisStreamName' title = ""/></div>
+<div id = 'cognitoPoolId' title = ""/></div>
+<div id = 'awsRegion' title = ""/></div>
+<div id = 'contentId' title = ""/></div>
+<div id = 'language' title = "en"/></div>
+<div id = 'versions' title = ""/></div>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+<script src="../js/kinesis.js"></script>
+  </body>
+</html>

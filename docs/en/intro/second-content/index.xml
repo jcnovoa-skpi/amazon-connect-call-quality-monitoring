@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Second Content on My AWS Workshop</title>
+    <link>/en/intro/second-content.html</link>
+    <description>Recent content in Second Content on My AWS Workshop</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 30 Sep 2020 21:03:27 +1000</lastBuildDate><atom:link href="/en/intro/second-content/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>
