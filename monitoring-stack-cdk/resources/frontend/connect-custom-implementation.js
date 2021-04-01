@@ -132,68 +132,6 @@ function strictNumber(metric) {
   return Number(metric) || 0;
 }
 
-/*
-const AUDIO_INPUT = 'audio_input';
-const AUDIO_OUTPUT = 'audio_output';
-
-let timeSeriesStreamStatsBuffer = [];
-let aggregatedUserAudioStats = {};
-let aggregatedRemoteAudioStats = {};
-let rtpStatsJob = null;
-let reportStatsJob = null;
-const { SoftphoneErrorTypes } = connect;
-
-function getTimeSeriesStats(currentStats, previousStats, streamType) {
-  if (previousStats && currentStats) {
-    const packetsLost = currentStats.packetsLost > previousStats.packetsLost
-      ? currentStats.packetsLost - previousStats.packetsLost : 0;
-    const packetsCount = currentStats.packetsCount > previousStats.packetsCount
-      ? currentStats.packetsCount - previousStats.packetsCount : 0;
-    return {
-      timestamp: currentStats.timestamp,
-      packetsLost: strictNumber(packetsLost),
-      packetsCount: strictNumber(packetsCount),
-      softphoneStreamType: streamType,
-      audioLevel: strictNumber(currentStats.audioLevel),
-      jitterBufferMillis: strictNumber(currentStats.jbMilliseconds),
-      roundTripTimeMillis: strictNumber(currentStats.rttMilliseconds),
-    };
-  }
-  return {
-    timestamp: currentStats.timestamp,
-    packetsLost: strictNumber(currentStats.packetsLost),
-    packetsCount: strictNumber(currentStats.packetsCount),
-    softphoneStreamType: streamType,
-    audioLevel: strictNumber(currentStats.audioLevel),
-    jitterBufferMillis: strictNumber(currentStats.jbMilliseconds),
-    roundTripTimeMillis: strictNumber(currentStats.rttMilliseconds),
-  };
-}
-
-function startStatsCollectionJob(rtcSession) {
-  rtpStatsJob = window.setInterval(() => {
-    rtcSession.getUserAudioStats().then((stats) => {
-      const previousUserStats = aggregatedUserAudioStats;
-      aggregatedUserAudioStats = stats;
-      timeSeriesStreamStatsBuffer.push(
-        getTimeSeriesStats(aggregatedUserAudioStats, previousUserStats, AUDIO_INPUT),
-      );
-    }, (error) => {
-      connect.rootLogger.debug('Failed to get user audio stats.', error);
-    });
-    rtcSession.getRemoteAudioStats().then((stats) => {
-      const previousRemoteStats = aggregatedRemoteAudioStats;
-      aggregatedRemoteAudioStats = stats;
-      timeSeriesStreamStatsBuffer.push(
-        getTimeSeriesStats(aggregatedRemoteAudioStats, previousRemoteStats, AUDIO_OUTPUT),
-      );
-    }, (error) => {
-      connect.rootLogger.debug('Failed to get remote audio stats.', error);
-    });
-  }, 1000);
-}
-*/
-
 function subscribeToTelmetryEvents() {
   subscribeToSoftphoneMetrics();
   subscribeToCallReports();
@@ -259,102 +197,6 @@ function subscribeToCallReports() {
   })
 }
 
-/*
-function sendSoftphoneMetrics() {
-  const streamStats = timeSeriesStreamStatsBuffer.slice();
-  timeSeriesStreamStatsBuffer = [];
-  if (streamStats.length > 0) {
-    const currentAgent = new connect.Agent();
-    const contactMediaInfo = currentAgent.getContacts()[0].getAgentConnection().getMediaInfo();
-    const callConfig = contactMediaInfo.callConfigJson;
-    const metricsJson = {
-      agentPrivateIp: localIp,
-      callConfigJson: callConfig,
-      agentRoutingProfile: currentAgent.getRoutingProfile().name,
-      contactId: currentAgent.getContacts()[0].getContactId(),
-      contactQueue: currentAgent.getContacts()[0].getQueue().name,
-      softphoneStreamStatistics: streamStats,
-    };
-    console.log('Sending softphone metric data to ElasticSearch');
-    esApiGatewayRequest('POST', 'softphonemetrics', metricsJson);
-  }
-}
-
-function sendSoftphoneReport(report, userAudioStats, remoteAudioStats) {
-  report.streamStats = [
-    { ...userAudioStats, softphoneStreamType: AUDIO_INPUT },
-    { ...remoteAudioStats, softphoneStreamType: AUDIO_OUTPUT },
-  ];
-  const callReport = {
-    callStartTime: report.sessionStartTime,
-    softphoneStreamStatistics: report.streamStats,
-    callEndTime: report.sessionEndTime,
-    gumTimeMillis: report.gumTimeMillis,
-    initializationTimeMillis: report.initializationTimeMillis,
-    iceCollectionTimeMillis: report.iceCollectionTimeMillis,
-    signallingConnectTimeMillis: report.signallingConnectTimeMillis,
-    handshakingTimeMillis: report.handshakingTimeMillis,
-    preTalkingTimeMillis: report.preTalkingTimeMillis,
-    talkingTimeMillis: report.talkingTimeMillis,
-    cleanupTimeMillis: report.cleanupTimeMillis,
-    iceCollectionFailure: report.iceCollectionFailure,
-    signallingConnectionFailure: report.signallingConnectionFailure,
-    handshakingFailure: report.handshakingFailure,
-    gumOtherFailure: report.gumOtherFailure,
-    gumTimeoutFailure: report.gumTimeoutFailure,
-    createOfferFailure: report.createOfferFailure,
-    setLocalDescriptionFailure: report.setLocalDescriptionFailure,
-    userBusyFailure: report.userBusyFailure,
-    invalidRemoteSDPFailure: report.invalidRemoteSDPFailure,
-    noRemoteIceCandidateFailure: report.noRemoteIceCandidateFailure,
-    setRemoteDescriptionFailure: report.setRemoteDescriptionFailure,
-  };
-
-  const currentAgent = new connect.Agent();
-  const contactMediaInfo = currentAgent.getContacts()[0].getAgentConnection().getMediaInfo();
-  const callConfig = contactMediaInfo.callConfigJson;
-  const callReportJson = {
-    agentPrivateIp: localIp,
-    callConfigJson: callConfig,
-    numberofCpu: window.navigator.hardwareConcurrency,
-    localDeviceMemoryLimit: window.navigator.deviceMemory,
-    agentBrowserName: browserName,
-    agentBrowserversion: version,
-    agentRoutingProfile: currentAgent.getRoutingProfile().name,
-    contactQueue: currentAgent.getContacts()[0].getQueue().name,
-    contactId: currentAgent.getContacts()[0].getContactId(),
-    report: callReport,
-  };
-  console.log('Sending softphone call report data to ElasticSearch');
-  esApiGatewayRequest('POST', 'callreport', callReportJson);
-}
-
-function stopJob(task) {
-  if (task) {
-    window.clearInterval(task);
-  }
-  return null;
-}
-
-function startStatsReportingJob() {
-  reportStatsJob = window.setInterval(() => {
-    sendSoftphoneMetrics();
-  }, 30000);
-}
-
-function stopJobsAndReport(sessionReport) {
-  console.log('stopJobsAndReport');
-  rtpStatsJob = stopJob(rtpStatsJob);
-  reportStatsJob = stopJob(reportStatsJob);
-  sendSoftphoneReport(
-    sessionReport,
-    { ...aggregatedUserAudioStats, softphoneStreamType: AUDIO_INPUT },
-    { ...aggregatedRemoteAudioStats, softphoneStreamType: AUDIO_OUTPUT }
-  );
-  sendSoftphoneMetrics();
-}
-*/
-
 function initCustomImplementation(div, apiUrl) {
   if(apiUrl && apiUrl != undefined) {
     window.apiUrl = apiUrl;
@@ -363,31 +205,6 @@ function initCustomImplementation(div, apiUrl) {
     connect.core.initCCP(div, ccpParams);
   }
   connect.core.initSoftphoneManager({ allowFramedSoftphone: true });
-  /*
-  connect.core.onSoftphoneSessionInit(({ connectionId }) => {
-    const softphoneManager = connect.core.getSoftphoneManager();
-    if (softphoneManager) {
-      // access session
-      const session = softphoneManager.getSession(connectionId);
-      console.log(`Session on init ${session}`);
-      const agent = new connect.Agent();
-      const contact = agent.getContacts()[0];
-      console.log(`Contact on softphone session init ${contact}`);
-      session.onSessionFailed = (rtcSession, reason) => {
-        console.log(`Session failed for reason: ${reason}`);
-        stopJobsAndReport(rtcSession.sessionReport);
-      };
-      session.onSessionConnected = (rtcSession) => {
-        console.log(`Detected new session ${rtcSession}`);
-        startStatsCollectionJob(rtcSession);
-        startStatsReportingJob();
-      };
-      session.onSessionCompleted = (rtcSession) => {
-        console.log(`Session completed ${rtcSession}`);
-        stopJobsAndReport(rtcSession.sessionReport);
-      };
-    }
-  });*/
   connect.agent(subscribeToAgentEvents);
   subscribeToTelmetryEvents();
 }
