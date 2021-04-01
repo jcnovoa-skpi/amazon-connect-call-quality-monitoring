@@ -42,7 +42,7 @@ def gendata(body):
     for metric in body['API_METRIC']:
         yield {
             "_index": "apimetric-",
-            "pipeline": "stats_dailyindex",
+            "pipeline": "apimetrics_dailyindex",
             "_type": "document",
             "doc": {
                     "agent": body['agent'],

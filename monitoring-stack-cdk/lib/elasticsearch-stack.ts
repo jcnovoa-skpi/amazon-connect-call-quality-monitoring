@@ -29,31 +29,39 @@ export class ElasticSearchStack extends cfn.NestedStack {
 
   private ccpName: string;
 
-  public elasticsearchDomain: elasticsearch.CfnDomain;
+  public elasticsearchArn: string;
+
+  private elasticsearchDomain: elasticsearch.CfnDomain;
 
   private cognitoPools: CognitoPoolStore;
 
   constructor(scope: cdk.Construct, id: string, props: ElasticsearchStackProps) {
     super(scope, id);
-    this.ccpUrl = props.ccpUrl;
-    // get a unique suffix from the second to last element of the stackId, e.g. 9e3a
-    const suffix = cdk.Fn.select(3, cdk.Fn.split('-', cdk.Fn.select(2, cdk.Fn.split('/', this.stackId))));
-    // get the name of the connect instance from the ccp url
-    this.ccpName = this.ccpUrl.substring(
-      this.ccpUrl.indexOf('//') + 2,
-      this.ccpUrl.indexOf('.awsapps.com'),
-    );
+    
+    if(process.env.ES_DOMAIN_ENDPOINT != undefined) {
+      //future releases should have both paths use the Domain construct
+      this.elasticsearchArn = elasticsearch.Domain.fromDomainEndpoint(this, "Existing Domain", process.env.ES_DOMAIN_ENDPOINT).domainArn.replace('search-', '');
+    } else {
+      this.ccpUrl = props.ccpUrl;
+      // get a unique suffix from the second to last element of the stackId, e.g. 9e3a
+      const suffix = cdk.Fn.select(3, cdk.Fn.split('-', cdk.Fn.select(2, cdk.Fn.split('/', this.stackId))));
+      // get the name of the connect instance from the ccp url
+      this.ccpName = this.ccpUrl.substring(
+        this.ccpUrl.indexOf('//') + 2,
+        this.ccpUrl.indexOf('.awsapps.com'),
+      );
 
-    // es max domain name length is 28. suffix is 4 characters.
-    if (this.ccpName.length > 24) {
-      this.ccpName = this.ccpName.substring(0, 24);
+      if (this.ccpName.length > 24) {
+        this.ccpName = this.ccpName.substring(0, 24);
+      }
+      this.cognitoPools = this.createCognitoPools(suffix);
+      const iamResources = this.createIamResources(this.cognitoPools.identityPool);
+      this.elasticsearchDomain = this.createElasticsearchDomain(
+        this.cognitoPools,
+        iamResources,
+      );
+      this.elasticsearchArn = this.elasticsearchDomain.attrArn;
     }
-    this.cognitoPools = this.createCognitoPools(suffix);
-    const iamResources = this.createIamResources(this.cognitoPools.identityPool);
-    this.elasticsearchDomain = this.createElasticsearchDomain(
-      this.cognitoPools,
-      iamResources,
-    );
   }
 
   private createCognitoPools(suffix: string) {
@@ -133,7 +141,7 @@ export class ElasticSearchStack extends cfn.NestedStack {
       },
       ebsOptions: {
         ebsEnabled: true,
-        volumeSize: 100,
+        volumeSize: 1000,
         volumeType: 'gp2',
       },
       elasticsearchClusterConfig: {
@@ -141,7 +149,7 @@ export class ElasticSearchStack extends cfn.NestedStack {
         dedicatedMasterEnabled: true,
         dedicatedMasterType: 'c5.large.elasticsearch',
         instanceCount: 3,
-        instanceType: 'r5.large.elasticsearch',
+        instanceType: 'r5.2xlarge.elasticsearch',
         zoneAwarenessEnabled: true,
         zoneAwarenessConfig: {
           availabilityZoneCount: 3,
@@ -160,11 +168,16 @@ export class ElasticSearchStack extends cfn.NestedStack {
   }
 
   public getUserCreateUrl() {
-    return `https://${this.region}.console.aws.amazon.com/cognito/users?region=${this.region}#/pool/${this.cognitoPools.userPool}/users`;
+    return this.cognitoPools ?
+      `https://${this.region}.console.aws.amazon.com/cognito/users?region=${this.region}#/pool/${this.cognitoPools.userPool}/users`
+      : 'Cognito User Pools are not deployed for existing ES domains';
   }
 
   public getKibanaUrl() {
-    return `https://${this.elasticsearchDomain.attrDomainEndpoint}/_plugin/kibana/`;
+    const domainEndpoint = process.env.ES_DOMAIN_ENDPOINT ? 
+      process.env.ES_DOMAIN_ENDPOINT
+      : this.elasticsearchDomain.attrDomainEndpoint;
+    return `https://${domainEndpoint}/_plugin/kibana/`;
   }
 
   private configureElasticsearchDomain(elasticsearchDomain: elasticsearch.CfnDomain) {

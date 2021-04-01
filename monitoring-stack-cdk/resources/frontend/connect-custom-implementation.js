@@ -9,6 +9,14 @@ const instanceRegion = document.currentScript.getAttribute('region');
 const ccpParams = {
   ccpUrl,
   loginPopup: true,
+  loginPopupAutoClose: true,
+  loginOptions: {                 // optional, if provided opens login in new window
+    autoClose: true,              // optional, defaults to `false`
+    height: 600,                  // optional, defaults to 578
+    width: 400,                   // optional, defaults to 433
+    top: 0,                       // optional, defaults to 0
+    left: 0                       // optional, defaults to 0
+  },
   softphone: {
     allowFramedSoftphone: false,
   },
@@ -118,6 +126,13 @@ function subscribeToAgentEvents(agent) {
   }, 30000);
 }
 
+function strictNumber(metric) {
+  //converts string to a number and handles NaN -> 0
+  //this prevents multiple edge cases that break the API GW mapping template
+  return Number(metric) || 0;
+}
+
+/*
 const AUDIO_INPUT = 'audio_input';
 const AUDIO_OUTPUT = 'audio_output';
 
@@ -136,22 +151,22 @@ function getTimeSeriesStats(currentStats, previousStats, streamType) {
       ? currentStats.packetsCount - previousStats.packetsCount : 0;
     return {
       timestamp: currentStats.timestamp,
-      packetsLost: packetsLost,
-      packetsCount: packetsCount,
+      packetsLost: strictNumber(packetsLost),
+      packetsCount: strictNumber(packetsCount),
       softphoneStreamType: streamType,
-      audioLevel: currentStats.audioLevel,
-      jitterBufferMillis: currentStats.jbMilliseconds,
-      roundTripTimeMillis: currentStats.rttMilliseconds,
+      audioLevel: strictNumber(currentStats.audioLevel),
+      jitterBufferMillis: strictNumber(currentStats.jbMilliseconds),
+      roundTripTimeMillis: strictNumber(currentStats.rttMilliseconds),
     };
   }
   return {
     timestamp: currentStats.timestamp,
-    packetsLost: currentStats.packetsLost,
-    packetsCount: currentStats.packetsCount,
+    packetsLost: strictNumber(currentStats.packetsLost),
+    packetsCount: strictNumber(currentStats.packetsCount),
     softphoneStreamType: streamType,
-    audioLevel: currentStats.audioLevel,
-    jitterBufferMillis: currentStats.jitterBufferMillis,
-    roundTripTimeMillis: currentStats.roundTripTimeMillis,
+    audioLevel: strictNumber(currentStats.audioLevel),
+    jitterBufferMillis: strictNumber(currentStats.jbMilliseconds),
+    roundTripTimeMillis: strictNumber(currentStats.rttMilliseconds),
   };
 }
 
@@ -177,7 +192,74 @@ function startStatsCollectionJob(rtcSession) {
     });
   }, 1000);
 }
+*/
 
+function subscribeToTelmetryEvents() {
+  subscribeToSoftphoneMetrics();
+  subscribeToCallReports();
+  subscribeToApiMetrics();
+}
+
+function subscribeToApiMetrics() {
+  connect.core.getEventBus().subscribe(connect.EventType.API_METRIC, (event) => {
+    console.log(JSON.stringify(event));
+    const date = new Date();
+    const timestamp = date.toJSON();
+    event.timestamp = timestamp;
+    metriclist.push(event);
+  });
+}
+function subscribeToSoftphoneMetrics() {
+  connect.core.getEventBus().subscribe(connect.EventType.SOFTPHONE_STATS, (streamStats) => {
+    const currentAgent = new connect.Agent();
+    const contactMediaInfo = currentAgent.getContacts()[0].getAgentConnection().getMediaInfo();
+    const callConfig = contactMediaInfo.callConfigJson;
+    const metricsJson = {
+      agentPrivateIp: localIp,
+      callConfigJson: callConfig,
+      agentRoutingProfile: currentAgent.getRoutingProfile().name,
+      contactId: currentAgent.getContacts()[0].getContactId(),
+      contactQueue: currentAgent.getContacts()[0].getQueue().name,
+      softphoneStreamStatistics: cleanStreamStatsData(streamStats.stats),
+    };
+    console.log('Sending softphone metric data to ElasticSearch');
+    esApiGatewayRequest('POST', 'softphonemetrics', metricsJson);
+  });
+}
+
+function cleanStreamStatsData(streamStats) {
+  return streamStats.map(statEntry => {
+    statEntry.packetsLost = strictNumber(statEntry.packetsLost);
+    statEntry.packetsCount = strictNumber(statEntry.packetsCount);
+    statEntry.audioLevel = strictNumber(statEntry.audioLevel);
+    statEntry.jitterBufferMillis = strictNumber(statEntry.jitterBufferMillis);
+    statEntry.roundTripTimeMillis = strictNumber(statEntry.roundTripTimeMillis);
+    return statEntry;
+  })
+}
+
+function subscribeToCallReports() {
+  connect.core.getEventBus().subscribe(connect.EventType.SOFTPHONE_REPORT, (report) => {
+    const currentAgent = new connect.Agent();
+    const contactMediaInfo = currentAgent.getContacts()[0].getAgentConnection().getMediaInfo();
+    const callConfig = contactMediaInfo.callConfigJson;
+    const callReportJson = {
+      agentPrivateIp: localIp,
+      callConfigJson: callConfig,
+      numberofCpu: window.navigator.hardwareConcurrency,
+      localDeviceMemoryLimit: window.navigator.deviceMemory,
+      agentBrowserName: browserName,
+      agentBrowserversion: version,
+      agentRoutingProfile: currentAgent.getRoutingProfile().name,
+      contactQueue: currentAgent.getContacts()[0].getQueue().name,
+      ...report
+    };
+    console.log('Sending softphone call report data to ElasticSearch');
+    esApiGatewayRequest('POST', 'callreport', callReportJson);
+  })
+}
+
+/*
 function sendSoftphoneMetrics() {
   const streamStats = timeSeriesStreamStatsBuffer.slice();
   timeSeriesStreamStatsBuffer = [];
@@ -271,6 +353,7 @@ function stopJobsAndReport(sessionReport) {
   );
   sendSoftphoneMetrics();
 }
+*/
 
 function initCustomImplementation(div, apiUrl) {
   if(apiUrl && apiUrl != undefined) {
@@ -280,13 +363,7 @@ function initCustomImplementation(div, apiUrl) {
     connect.core.initCCP(div, ccpParams);
   }
   connect.core.initSoftphoneManager({ allowFramedSoftphone: true });
-  connect.core.getEventBus().subscribe(connect.EventType.API_METRIC, (event) => {
-    console.log(JSON.stringify(event));
-    const date = new Date();
-    const timestamp = date.toJSON();
-    event.timestamp = timestamp;
-    metriclist.push(event);
-  });
+  /*
   connect.core.onSoftphoneSessionInit(({ connectionId }) => {
     const softphoneManager = connect.core.getSoftphoneManager();
     if (softphoneManager) {
@@ -310,8 +387,9 @@ function initCustomImplementation(div, apiUrl) {
         stopJobsAndReport(rtcSession.sessionReport);
       };
     }
-  });
+  });*/
   connect.agent(subscribeToAgentEvents);
+  subscribeToTelmetryEvents();
 }
 
 // If the script was loaded with the ccpUrl attribute, we are likely using the

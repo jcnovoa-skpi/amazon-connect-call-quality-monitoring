@@ -31,11 +31,25 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
       default: ''
     });
 
+    var splunkUrlParameter = new cdk.CfnParameter(this, 'SplunkUrl', {
+      type: "String",
+      description: "The Splunk URL to send data to. Leave empty if you aren't using Splunk.",
+      default: ''
+    });
+
+    var splunkTokenParameter = new cdk.CfnParameter(this, 'SplunkToken', {
+      type: "String",
+      description: "Your Splunk HEC token. Leave empty if you aren't using Splunk",
+      default: ''
+    });
+
     var cdkProject = new codebuild.Project(this, 'CDK Builder', {
       buildSpec: codebuild.BuildSpec.fromObject(buildSpecJson),
       environmentVariables: {
         "CCP_URL": {value: ccpUrlParameter.valueAsString},
         "SAML_URL": {value: samlUrlParameter.valueAsString},
+        "SPLUNK_ENDPOINT": {value: splunkUrlParameter.valueAsString},
+        "SPLUNK_TOKEN": {value: splunkTokenParameter.valueAsString}
       },
     });
 
@@ -45,12 +59,12 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
       'CloudFrontFullAccess',
       'AWSCloudFormationFullAccess',
       'AmazonCognitoPowerUser',
-      'AmazonDynamoDBFullAccess',
+      'CloudWatchLogsFullAccess',
       'AmazonESFullAccess',
       'CloudWatchEventsFullAccess',
       'IAMFullAccess',
       'AWSKeyManagementServicePowerUser',
-      'AWSLambdaFullAccess'
+      'AWSLambda_FullAccess',
     ]
 
     const suffix = cdk.Fn.select(3, cdk.Fn.split('-', cdk.Fn.select(2, cdk.Fn.split('/', this.stackId))));
@@ -61,7 +75,7 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
 
     codeBuildPolicy.addStatements(
       iam.PolicyStatement.fromJson({
-        "Action": "kinesis:*",
+        "Action": "firehose:*",
         "Resource": "*",
         "Effect": "Allow"
       }),
@@ -80,6 +94,24 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
             "apigateway:*"
         ],
         "Resource": "arn:aws:apigateway:*::/*"
+      }),
+      iam.PolicyStatement.fromJson({
+        "Action": [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:GetBucketLocation",
+          "s3:CreateBucket",
+          "s3:GetEncryptionConfiguration",
+          "s3:PutEncryptionConfiguration",
+          "s3:PutBucketVersioning",
+          "s3:GetBucketVersioning",
+          "s3:PutBucketWebsite",
+          "s3:PutBucketPolicy",
+          "s3:GetBucketPolicy"
+        ],
+        "Resource": "arn:aws:s3:::*",
+        "Effect": "Allow"
       })
     );
 
@@ -110,18 +142,11 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
       serviceToken: provider.serviceToken,
     });
 
-    this.generateOutputAndParam('UserCreationUrl', 'CognitoUrl', codeBuildResource);
-    this.generateOutputAndParam('KibanaUrl', 'KibanaUrl', codeBuildResource);
-    this.generateOutputAndParam('CloudfrontUrl', 'CloudfrontUrl', codeBuildResource);
+    var name = cdk.Stack.of(this).stackName;
 
-    /*new ssm.StringListParameter(this, 'URL List Test', {
-      stringListValue: [
-        codeBuildResource.getAttString('CognitoUrl'),
-        codeBuildResource.getAttString('KibanaUrl'),
-        codeBuildResource.getAttString('CloudfrontUrl')
-      ],
-      parameterName: 'UrlSet'
-    }) */
+    this.generateOutputAndParam(`UserCreationUrl-${name}`, 'CognitoUrl', codeBuildResource);
+    this.generateOutputAndParam(`KibanaUrl-${name}`, 'KibanaUrl', codeBuildResource);
+    this.generateOutputAndParam(`CloudfrontUrl-${name}`, 'CloudfrontUrl', codeBuildResource);
   }
 
   generateOutputAndParam(parameterName: string, attributeName: string, codeBuildResource: cdk.CfnCustomResource) {

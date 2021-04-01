@@ -1,15 +1,6 @@
 # Amazon Connect Monitoring Solution
 Welcome to the Amazon Connect Monitoring Solution Github repository, here you can find all the technical artifacts related to the solution.
 
-To deploy the solution, [click here](https://serverlessrepo.aws.amazon.com/applications/us-west-2/287087860234/AmazonConnectMonitoringSolution) to go to the application page in the AWS Serverless Repository. 
+To deploy the solution, you can install the CDK, set the environment variable CCP_URL to the CCP v2 URL of your instance, set the environment SAML_URL if you are using SAML, and then run cdk deploy.
 
-Here are some relevant documents:
-
-- [Deployment guide](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/deployment-guide.html)
-- [User guide](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/user-guide.html)
-- [Application Architecture](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/application-architecture.html)
-- [Data Model](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/data-model.html)
-- [Operations guide](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/operations-guide.html)
-- [Anomaly detection](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/anomaly-detection.html)
-
-If you have any issues please don't hesitate to open up a Github issue. 
+A deployment, troubleshooting, and architecture guide will be added shortly.

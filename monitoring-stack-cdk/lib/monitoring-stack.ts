@@ -15,7 +15,19 @@ export default class MonitoringStack extends cdk.Stack {
   constructor(app: cdk.App, id: string) {
     super(app, id);
 
+    const customStreamsUrl = process.env.STREAMS_URL;
+    if (customStreamsUrl != undefined &&
+      ( !customStreamsUrl?.startsWith('https://') || customStreamsUrl.endsWith('/') )){
+      throw(new Error("Custom Streams URL must begin with https:// and not contain trailing slash"));
+    }
     const ccpUrl = process.env.CCP_URL!;
+    if (
+      ccpUrl == undefined 
+      || !ccpUrl.startsWith('https://') 
+      || !ccpUrl.includes('.awsapps.com')
+      || !ccpUrl.includes('/ccp-v2') ) {
+        throw(new Error('CCP URL must be the https:// url to your ccp-v2 softphone'));
+      }
     const cfnResponse = process.env.CFN_RESPONSE_DATA === undefined ? '' : process.env.CFN_RESPONSE_DATA;
     const streamsBucket = new s3.Bucket(this, 'StreamsBucket', {
       websiteIndexDocument: 'index.html',
@@ -38,13 +50,18 @@ export default class MonitoringStack extends cdk.Stack {
       ],
     });
 
-    const elasticsearchStackDeployment = new elasticSearchStack.ElasticSearchStack(this, 'ElasticsearchStack', {
-      ccpUrl,
-    });
+    const elasticsearchStackDeployment = 
+      process.env.SPLUNK_ENDPOINT == undefined ||
+      process.env.SPLUNK_ENDPOINT == '' 
+      ? new elasticSearchStack.ElasticSearchStack(this, 'ElasticsearchStack', {
+        ccpUrl,
+      })
+      : undefined;
 
     const metricsApiStackDeployment = new MetricApiStack(this, 'MetricsApiStack', {
-      elasticsearchDomain: elasticsearchStackDeployment.elasticsearchDomain,
+      elasticsearchArn: elasticsearchStackDeployment == undefined ? undefined : elasticsearchStackDeployment!.elasticsearchArn,
       streamsDistribution: distribution,
+      customStreamsUrl: customStreamsUrl
     });
 
     const streamsApiDeployment = new StreamsGeneratorStack(this, 'DynamicFrontendStack', {
@@ -61,15 +78,17 @@ export default class MonitoringStack extends cdk.Stack {
       code: lambda.Code.fromAsset('./resources/custom-resources/sar-confirmer'),
       environment: {
         CFN_RESPONSE_PAYLOAD: cfnResponse!,
-        COGNITO_URL: elasticsearchStackDeployment.getUserCreateUrl(),
-        KIBANA_URL: elasticsearchStackDeployment.getKibanaUrl(),
+        COGNITO_URL: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getUserCreateUrl(),
+        KIBANA_URL: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getKibanaUrl(),
         CLOUDFRONT_URL: distribution.distributionDomainName,
       },
       timeout: cdk.Duration.minutes(2),
     });
 
     sarStackConfirmer.node.addDependency(streamsApiDeployment);
-    sarStackConfirmer.node.addDependency(elasticsearchStackDeployment);
+    if(elasticsearchStackDeployment != undefined) {
+      sarStackConfirmer.node.addDependency(elasticsearchStackDeployment!);
+    }
     sarStackConfirmer.node.addDependency(metricsApiStackDeployment);
 
     const provider = new customResource.Provider(this, 'SAR Custom Resource Confirmer Provider', {

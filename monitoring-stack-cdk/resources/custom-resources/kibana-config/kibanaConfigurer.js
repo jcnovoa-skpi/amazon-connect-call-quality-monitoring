@@ -5,6 +5,7 @@ const aws = require('aws-sdk');
 const fs = require('fs');
 const FormData = require('form-data');
 const { send } = require('process');
+const { EventEmitter } = require('events');
 
 const region = process.env.AWS_REGION; // e.g. us-west-1
 
@@ -76,7 +77,7 @@ async function createIndices(domainName) {
       processors: [
         {
           date_index_name: {
-            field: 'report.callStartTime',
+            field: 'doc.report.callEndTime',
             index_name_prefix: 'softphonecallreport-',
             date_rounding: 'd',
           },
@@ -92,7 +93,7 @@ async function createIndices(domainName) {
       'Content-Type': 'application/json;charset=UTF-8',
       Accept: 'application/json',
     },
-    path: '_ingest/pipeline/reports_dailyindex',
+    path: '_ingest/pipeline/apimetrics_dailyindex',
     body: Buffer.from(JSON.stringify({
       description: 'daily date-time api metric index naming',
       processors: [
@@ -105,9 +106,47 @@ async function createIndices(domainName) {
         },
       ],
     })),
-  };
+    }
+
+  const softphoneStreamStatsIndexTemplate = {
+    method: 'PUT',
+    headers: {
+      host: domainName,
+      'Content-Type': 'application/json;charset=UTF-8',
+      Accept: 'application/json',
+    },
+    path: '_template/streamstatstemplate',
+    body: Buffer.from(JSON.stringify({
+      "index_patterns": ["softphonestreamstats-*"],
+      "template": {
+        "settings": {
+          "number_of_shards": 2
+        }
+      }
+    }))
+  }
+
+  const apiMetricsIndexTemplate = {
+    method: 'PUT',
+    headers: {
+      host: domainName,
+      'Content-Type': 'application/json;charset=UTF-8',
+      Accept: 'application/json',
+    },
+    path: '_template/apimetrictemplate',
+    body: Buffer.from(JSON.stringify({
+      "index_patterns": ["apimetric-*"],
+      "template": {
+        "settings": {
+          "number_of_shards": 1
+        }
+      }
+    }))
+  }
 
   const indexConfigurations = [
+    apiMetricsIndexTemplate,
+    softphoneStreamStatsIndexTemplate,
     apiMetricsIndex,
     softphoneReportStatsIndex,
     softphoneStreamStatsIndex,
@@ -299,18 +338,22 @@ async function configureKibana(domainName) {
 
 exports.handler = async (event, context) => {
   console.log(JSON.stringify(event, 0, 4));
-  const domainName = event.ResourceProperties.ElasticsearchDomain;
-  const indexCreationResult = await createIndices(domainName);
-  const resultSet = new Set(indexCreationResult);
-  if (resultSet.has('{"acknowledged":true}') && resultSet.size === 1) {
-    const kibanaImportResult = await configureKibana(domainName);
-    if (JSON.parse(kibanaImportResult).success) {
-      await addSampleStreamRecord(domainName);
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      await configureHighCardinalityAnomalyDetection(domainName);
-      return { statusCode: 200, body: 'Successfully imported dashboards and indices' };
+  if(event.RequestType !== 'Delete') {
+    const domainName = event.ResourceProperties.ElasticsearchDomain;
+    const indexCreationResult = await createIndices(domainName);
+    const resultSet = new Set(indexCreationResult);
+    if (resultSet.has('{"acknowledged":true}') && resultSet.size === 1) {
+      const kibanaImportResult = await configureKibana(domainName);
+      if (JSON.parse(kibanaImportResult).success) {
+        await addSampleStreamRecord(domainName);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        if(event.RequestType == 'Create') {
+          await configureHighCardinalityAnomalyDetection(domainName);
+        }
+        return { statusCode: 200, body: 'Successfully imported dashboards and indices' };
+      }
+      throw new Error('Unable to import dashboards');
     }
-    throw new Error('Unable to import dashboards');
+    throw new Error('Creating index patterns was not successful. Check logs for details.');
   }
-  throw new Error('Creating index patterns was not successful. Check logs for details.');
 };

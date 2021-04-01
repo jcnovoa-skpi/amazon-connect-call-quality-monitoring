@@ -66,11 +66,11 @@ def format_event(body):
                     **body,
                     "softphoneStreamType": stream['softphoneStreamType'],
                     "timestamp": stream['timestamp'],
-                    "packetsLost": stream['packetsLost'],
-                    "packetsCount": stream['packetsCount'],
-                    "audioLevel": stream['audioLevel'],
-                    "jitterBufferMillis": stream['jitterBufferMillis'],
-                    "roundTripTimeMillis": stream['roundTripTimeMillis']
+                    "packetsLost": int(stream['packetsLost'] or 0),
+                    "packetsCount": int(stream['packetsCount'] or 0),
+                    "audioLevel": int(stream['audioLevel'] or 0),
+                    "jitterBufferMillis": int(stream['jitterBufferMillis'] or 0),
+                    "roundTripTimeMillis": int(stream['roundTripTimeMillis'] or 0)
                     }
         }
 

@@ -7,7 +7,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="generator" content="Hugo 0.75.1" />
+  <meta name="generator" content="Hugo 0.79.1" />
   <meta name="description" content="Monitor call quality on Amazon Connect">
 <meta name="author" content="Kun Qian, Robertson Taylor">
 
@@ -193,28 +193,6 @@
  
 
           
-          
-
-
- 
-  
-    
-    <li data-nav-id="/en/anomaly-detection.html" title="Anomaly Detection" class="dd-item 
-        
-        
-        
-        ">
-      <a href="../en/anomaly-detection.html">
-          <b>6. </b>Anomaly Detection
-          
-      </a>
-      
-              
-    </li>
-  
- 
-
-          
          
     </ul>
 
@@ -318,23 +296,31 @@
 </figure>
 <ol>
 <li>Put the CCP url,  in the Application settings, tick the check box and deploy.</li>
-</ol>
-<p>
+<li>If your Amazon Connect requires SAML federation please provide SAML login URL in the SAML URL parameter.</li>
+<li>If you would like to integrate with your Splunk Enterprise or Splunk Cloud cluster.
+<ul>
+<li>Please provide your Splunk endpoint including the port number in the format of:
+<a href="https://xyz.splunk.com">https://xyz.splunk.com</a>:8080</li>
+<li>Please provide your HEC token
+
 <div class="notices warning" ><p>CcpUrl: The URL in the format https://*/ccp-v2.</p>
 </div>
 
 
 <div class="notices warning" ><p>Note that the CCP-v2 must be used.</p>
 </div>
-</p>
+</li>
+</ul>
+</li>
+</ol>
+
+<div class="notices warning" ><p>The sourcetype for the HEC token must be set to &ldquo;aws:connect:ccp&rdquo;.</p>
+</div>
+
 
 <figure>
 	<img src="../en/deployment-guide/SAR-deploy-params.png?classes=shadow&width=60pc" alt="SAR deploy params" />
 </figure>
-
-<div class="notices info" ><p>If your Amazon Connect requires SAML federation please provide SAML login URL in the SAML URL parameter.</p>
-</div>
-
 
 <div class="notices note" ><p>Please allow up to 45 minutes for the solution to deploy.</p>
 </div>
@@ -434,22 +420,6 @@
                     
                         
                         
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
                     
                 
                 
