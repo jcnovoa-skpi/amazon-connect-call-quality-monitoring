@@ -108,7 +108,8 @@ export class DeploymentCdkResourcesStack extends cdk.Stack {
           "s3:GetBucketVersioning",
           "s3:PutBucketWebsite",
           "s3:PutBucketPolicy",
-          "s3:GetBucketPolicy"
+          "s3:GetBucketPolicy",
+          "s3:PutBucketPublicAccessBlock"
         ],
         "Resource": "arn:aws:s3:::*",
         "Effect": "Allow"
