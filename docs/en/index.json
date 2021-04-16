@@ -7,8 +7,24 @@
 		"relativePagePath": "/en/deployment-guide.html"
 	},
 	{
+		"pageTitle": "Amazon Elasticsearch",
+		"relativePagePath": "/en/deployment-guide/elasticsearch.html"
+	},
+	{
+		"pageTitle": "Splunk",
+		"relativePagePath": "/en/deployment-guide/splunk.html"
+	},
+	{
 		"pageTitle": "User Guide",
 		"relativePagePath": "/en/user-guide.html"
+	},
+	{
+		"pageTitle": "Amazon Elasticsearch",
+		"relativePagePath": "/en/user-guide/elasticsearch.html"
+	},
+	{
+		"pageTitle": "Splunk",
+		"relativePagePath": "/en/user-guide/splunk.html"
 	},
 	{
 		"pageTitle": "Application Architecture",

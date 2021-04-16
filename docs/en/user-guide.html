@@ -99,6 +99,54 @@
           
       </a>
       
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/en/deployment-guide/elasticsearch.html" title="Amazon Elasticsearch" class="dd-item ">
+        <a href="../en/deployment-guide/elasticsearch.html">
+        Amazon Elasticsearch
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/en/deployment-guide/splunk.html" title="Splunk" class="dd-item ">
+        <a href="../en/deployment-guide/splunk.html">
+        Splunk
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -121,6 +169,54 @@
           
       </a>
       
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/en/user-guide/elasticsearch.html" title="Amazon Elasticsearch" class="dd-item ">
+        <a href="../en/user-guide/elasticsearch.html">
+        Amazon Elasticsearch
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/en/user-guide/splunk.html" title="Splunk" class="dd-item ">
+        <a href="../en/user-guide/splunk.html">
+        Splunk
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -273,163 +369,224 @@
 <ol>
 <li>Successfully deployed the solution from the <a href="../en/deployment-guide.html" title="Deployment Guide">deployment guide</a>.</li>
 </ol>
-<h3 id="amazon-elasticsearch">Amazon Elasticsearch</h3>
-<ol>
-<li>Record the output URLs of the resources are stored in the Simple Server Manager (SSM) Parameter store, go to the region for SSM parameter store where you’ve launched the stack.
-<ol>
-<li>Kibana URL (KibanaUrl) where you can open up the dashboard,</li>
-<li>URL to create a user from the created Amazon Cognito User Pool (UserCreationUrl)</li>
-<li>Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.</li>
-</ol>
-</li>
-</ol>
-<h3 id="splunk">Splunk</h3>
-<ol>
-<li>
-<p>Record the output URLs of the resources are stored in the Simple Server Manager (SSM) Parameter store, go to the region for SSM parameter store where you’ve launched the stack.</p>
-<ol>
-<li>Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.</li>
-</ol>
-</li>
-<li>
-<p>Successful deployment of SAR application, confirm both <code>softphonecallreport</code> and <code>softphonestreamstats</code> events are successfully ingested into Splunk HEC input via Kinesis Data Firehose.</p>
-</li>
-</ol>
-<h2 id="testing-the-deployment">Testing the deployment</h2>
-<ol>
-<li>Make an outbound call from the Cloudfront URL, after 30 seconds you should start to see metrics flowing into Elastic Search/Kibana/Splunk</li>
-</ol>
-<h3 id="amazon-elasticsearch-1">Amazon Elasticsearch</h3>
-<ol>
-<li>There are three dashboards that gets deployed</li>
-</ol>
-<ul>
-<li>“Business user - queue based dashboard”</li>
-<li>“Technical user - queue based”</li>
-<li>“Drill down dashboard”.</li>
-</ul>
-<p>They can be found under dashboards in Kibana. Screenshot below shows where to find dashboards inside Kibana.</p>
-<ol start="2">
-<li>Click open the business user dashboard and the technical dashboard, you should be able to see the metrics.</li>
-</ol>
+<p>This solution supports Amazon Elasticsearch or Splunk as the backend data store and visualization layer. Follow the appropriate guide for your choice of data store:</p>
+<p>User guide for <a href="../en/user-guide/elasticsearch.html">Amazon Elasticsearch </a>.</p>
+<p>User guide for <a href="../en/user-guide/splunk.html">Splunk</a>.</p>
+<!-- ### Amazon Elasticsearch
+
+1. Record the output URLs of the resources are stored in the Simple Server Manager (SSM) Parameter store, go to the region for SSM parameter store where you’ve launched the stack.
+    1. Kibana URL (KibanaUrl) where you can open up the dashboard,
+    2. URL to create a user from the created Amazon Cognito User Pool (UserCreationUrl)
+    3. Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.
+
+### Splunk
+
+1. Record the output URLs of the resources are stored in the Simple Server Manager (SSM) Parameter store, go to the region for SSM parameter store where you’ve launched the stack.
+    1. Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.
+
+2. Successful deployment of SAR application, confirm both `softphonecallreport` and `softphonestreamstats` events are successfully ingested into Splunk HEC input via Kinesis Data Firehose.
+
+
+## Testing the deployment
+1. Make an outbound call from the Cloudfront URL, after 30 seconds you should start to see metrics flowing into Elastic Search/Kibana/Splunk
+
+### Amazon Elasticsearch
+
+1. There are three dashboards that gets deployed
+ - “Business user - queue based dashboard”
+ - “Technical user - queue based” 
+ - “Drill down dashboard”. 
+
+They can be found under dashboards in Kibana. Screenshot below shows where to find dashboards inside Kibana.
+
+2. Click open the business user dashboard and the technical dashboard, you should be able to see the metrics.
 
 <figure>
-	<img src="../en/user-guide/kibana-dashboard-1.png?classes=shadow&width=60pc" alt="Kibana Dashboards" />
+    <img src="kibana-dashboard-1.png"/> <figcaption>
+            <h4>Kibana Dashboards</h4>
+        </figcaption>
 </figure>
-<h3 id="splunk-1">Splunk</h3>
-<ul>
-<li>The <code>sourcetype</code> for the HEC data inputs for soft phone data should be set to <code>sourcetype=&quot;aws:connect:ccp&quot;</code></li>
-<li>Run the following search command to check if <code>softphonestreamstats</code> are being ingested into Splunk:</li>
-</ul>
-<p><code>sourcetype=&quot;aws:connect:ccp&quot; | spath doc | search doc.agent=*</code></p>
-<ul>
-<li>Run the following search command to check if <code>softphonecallreport</code> are being ingested into Splunk:</li>
-</ul>
-<p><code>sourcetype=&quot;aws:connect:ccp&quot; | spath report | search agent=*</code></p>
-<ul>
-<li>All CCP events can be viewed with simple search on the right index.</li>
-</ul>
-<p><code>index=&lt;index&gt; sourcetype=&quot;aws:connect:ccp&quot;</code></p>
+
+
+### Splunk
+
+- The `sourcetype` for the HEC data inputs for soft phone data should be set to `sourcetype="aws:connect:ccp"`
+- Run the following search command to check if `softphonestreamstats` are being ingested into Splunk:
+
+`sourcetype="aws:connect:ccp" | spath doc | search doc.agent=*` 
+
+- Run the following search command to check if `softphonecallreport` are being ingested into Splunk:
+
+`sourcetype="aws:connect:ccp" | spath report | search agent=*`
+
+- All CCP events can be viewed with simple search on the right index.
+
+`index=<index> sourcetype="aws:connect:ccp"`
 
 <figure>
-	<img src="../en/user-guide/splunk-dashboard-1.png?classes=shadow&width=60pc" alt="Splunk search interface" />
+    <img src="splunk-dashboard-1.png"/> <figcaption>
+            <h4>Splunk search interface</h4>
+        </figcaption>
 </figure>
-<h2 id="using-the-dashboards">Using the dashboards</h2>
-<h3 id="amazon-elasticsearch-2">Amazon Elasticsearch</h3>
-<h4 id="business-user---queue-based-dashboard">Business user - Queue based dashboard</h4>
-<p>This dashboard displays some business metrics. The calls are grouped by the queue where the calls were placed into. In the dashboard you can see two visualisations.</p>
-<ul>
-<li>“softphonestreamstats”</li>
-<li>“call report”</li>
-</ul>
-<p>They match with the indexes which exist in ElasticSearch, for more information on the detailed data model please refer to the <a href="../en/data-model.html">data model documentation</a>.</p>
-<h4 id="softphone-call-report-visualization">Softphone call report visualization</h4>
+
+
+## Using the dashboards
+
+### Amazon Elasticsearch
+
+#### Business user - Queue based dashboard
+
+This dashboard displays some business metrics. The calls are grouped by the queue where the calls were placed into. In the dashboard you can see two visualisations.
+ - “softphonestreamstats” 
+ - “call report”
+ 
+They match with the indexes which exist in ElasticSearch, for more information on the detailed data model please refer to the [data model documentation](/en/data-model.html). 
+
+#### Softphone call report visualization
 
 <figure>
-	<img src="../en/user-guide/kibana-dashboard2.png?classes=shadow&width=60pc" alt="Business dashboard" />
+    <img src="kibana-dashboard2.png"/> <figcaption>
+            <h4>Business dashboard</h4>
+        </figcaption>
 </figure>
-<p>This screenshot on the left hand side of the dashboard shows a few metrics that are based from the <a href="../en/data-model.html">data model </a> in the “softphoencallreport-*” index. The metrics displayed here are:</p>
-<ul>
-<li>Number of calls less than 10 seconds</li>
-<li>Number of calls less than 30 seconds</li>
-<li>Number of calls less than 60 seconds</li>
-<li>Number of call failures</li>
-</ul>
-<p>These metrics are grouped by the queue the contact was in.</p>
-<p>These metrics are the default values for this visualization, however, you can customize this dashboard to show any of the metrics in the “softphoencallreport-*” index data model. For more details about Kibana visualizations please refer to <a href="https://www.elastic.co/guide/en/kibana/7.4/visualize.html" target="_blank">Kibana documentation here</a>.</p>
-<h4 id="softphone-stream-stats-visualization">Softphone stream stats visualization</h4>
+
+
+This screenshot on the left hand side of the dashboard shows a few metrics that are based from the [data model ](/en/data-model.html) in the “softphoencallreport-*” index. The metrics displayed here are:
+
+* Number of calls less than 10 seconds
+* Number of calls less than 30 seconds
+* Number of calls less than 60 seconds
+* Number of call failures
+
+These metrics are grouped by the queue the contact was in. 
+
+These metrics are the default values for this visualization, however, you can customize this dashboard to show any of the metrics in the “softphoencallreport-*” index data model. For more details about Kibana visualizations please refer to [Kibana documentation here](https://www.elastic.co/guide/en/kibana/7.4/visualize.html).
+
+#### Softphone stream stats visualization
 
 <figure>
-	<img src="../en/user-guide/kibana-buz-2.png?classes=shadow&width=60pc" alt="Business dashboard 2" />
+    <img src="kibana-buz-2.png"/> <figcaption>
+            <h4>Business dashboard 2</h4>
+        </figcaption>
 </figure>
-<p>This screenshot on the right hand side of the dashboard shows a few metrics that are based from the <a href="../en/data-model.html">data model </a> in the “softphonestreamstats-*” index. The metrics displayed here are:</p>
-<ul>
-<li>Number of total calls</li>
-<li>Number of calls where round trip time where greater than 500 milliseconds</li>
-<li>Number of calls where packet loss for output audio is greater than 10%</li>
-<li>Number of call where packet loss for input audio is greater than 10%</li>
-</ul>
-<p>These metrics are grouped by the queue the contact was in.</p>
-<p>These metrics are the default values for this visualization, however, you can customize this dashboard to show any of the metrics in the “softphonestreamstats-*” index data model.</p>
-<h4 id="technical-user---queue-based-dashboard">Technical user - Queue based dashboard</h4>
+
+
+This screenshot on the right hand side of the dashboard shows a few metrics that are based from the [data model ](/en/data-model.html) in the “softphonestreamstats-*” index. The metrics displayed here are:
+
+* Number of total calls
+* Number of calls where round trip time where greater than 500 milliseconds 
+* Number of calls where packet loss for output audio is greater than 10%
+* Number of call where packet loss for input audio is greater than 10%
+
+These metrics are grouped by the queue the contact was in. 
+
+These metrics are the default values for this visualization, however, you can customize this dashboard to show any of the metrics in the “softphonestreamstats-*” index data model.
+
+#### Technical user - Queue based dashboard
 
 <figure>
-	<img src="../en/user-guide/kibana-tech-1.png?classes=shadow&width=60pc" alt="Tech dashboard" />
+    <img src="kibana-tech-1.png"/> <figcaption>
+            <h4>Tech dashboard</h4>
+        </figcaption>
 </figure>
-<p>This dashboard consist of three visualizations, Round Trip Time average, Jitter Buffer Average, and Packet Loss Average. The dashboards by default will visualise the seperate queues in your index in different lines. By default these metrics are grouped by the queue of the contact, however, this can be customised to another field by editing the visualization.</p>
-<p>For example in the screenshot below we can see the round trip time average for the basicQueue is hovering from 400 milliseconds and then drops to around 300 milliseconds. However, we can see the salesQueue is consistently having round trip time between 700 and 800 milliseconds.</p>
-<h4 id="discover-tab">Discover tab</h4>
-<p>Once you have identified an area that requires a deeper dive, for example the large round trip time values for the salesQueue from the visualization in the technical dashboard screenshot above, you can click the discover tab in Kibana to investigate the raw data from that index.</p>
-<p>The screenshot below shows you how to navigate to the discover tab.</p>
-<p>
+
+
+This dashboard consist of three visualizations, Round Trip Time average, Jitter Buffer Average, and Packet Loss Average. The dashboards by default will visualise the seperate queues in your index in different lines. By default these metrics are grouped by the queue of the contact, however, this can be customised to another field by editing the visualization. 
+
+For example in the screenshot below we can see the round trip time average for the basicQueue is hovering from 400 milliseconds and then drops to around 300 milliseconds. However, we can see the salesQueue is consistently having round trip time between 700 and 800 milliseconds.
+
+
+#### Discover tab
+
+Once you have identified an area that requires a deeper dive, for example the large round trip time values for the salesQueue from the visualization in the technical dashboard screenshot above, you can click the discover tab in Kibana to investigate the raw data from that index. 
+
+The screenshot below shows you how to navigate to the discover tab.
+
 <figure>
-	<img src="../en/user-guide/kibana-discover-1.png?classes=shadow&width=60pc" alt="Discover dashboard 1" />
+    <img src="kibana-discover-1.png"/> <figcaption>
+            <h4>Discover dashboard 1</h4>
+        </figcaption>
 </figure>
+
 In the discover tab, you will discover a drop down on the left (show in the screenshot below) where you can toggle between the different index patterns in the ElasticSearch instance.
-
 <figure>
-	<img src="../en/user-guide/kibana-discover-2.png?classes=shadow&width=60pc" alt="Discover dashboard 2" />
+    <img src="kibana-discover-2.png"/> <figcaption>
+            <h4>Discover dashboard 2</h4>
+        </figcaption>
 </figure>
+
 The visualization shown long round trip time for the salesQueue in the technical user dashboard is based on data in the “softphonestreamstats-*” index. You can choose this index to show all the data with in the time range chosen in Kibana.
-
 <figure>
-	<img src="../en/user-guide/kibana-discover-3.png?classes=shadow&width=60pc" alt="Discover dashboard 3" />
-</figure></p>
-<p>There are other filters one can use in Kibana, such as filtering for records in the index where the roundtrip time was above 500 (the language in the query langauge requries us to say, Not between 0 to 500, which means above 500.</p>
-
-<figure>
-	<img src="../en/user-guide/kibana-discover-4.png?classes=shadow&width=60pc" alt="Discover dashboard 4" />
+    <img src="kibana-discover-3.png"/> <figcaption>
+            <h4>Discover dashboard 3</h4>
+        </figcaption>
 </figure>
-<h4 id="drill-down-dashboard">Drill down dashboard</h4>
-<p>To make the filter and investigation easier, we’ve built another dashboard call the “drilled down dashboard”. Here you can filter based on a few of the key attributes. For example if you were troubleshooting the long round trip times from the salesQueue you could filter by the Queue attribute and see all the records in the salesQueue. You can then apply another filter for RTT (round trip time) to filter for all the records greater than 500 RTT.</p>
-<p>Once the records have been filtered you can investigate the records to see if there are any patterns. For a detailed list of data model for these records please refer to the <a href="https://quip-amazon.com/ikTTAaZwFGrb/Data-model" target="_blank">data model documentation</a>.</p>
-<p>Another useful way of using the drill down dashboard is when a particular agent is reporting poor audio quality, you can filter by the agent and look at all the records from the agent and troubleshoot using the data provided in the record.
+
+
+
+There are other filters one can use in Kibana, such as filtering for records in the index where the roundtrip time was above 500 (the language in the query langauge requries us to say, Not between 0 to 500, which means above 500. 
 
 <figure>
-	<img src="../en/user-guide/kibana-drilldown-1.png?classes=shadow&width=60pc" alt="Drill down dashboard 4" />
-</figure></p>
-<h3 id="splunk-2">Splunk</h3>
-<h4 id="dashboards">Dashboards</h4>
-<p>Under the Agent Metrics tab, the Agents Stats dashboard has a few panels. The panels use the soft phone call log report to generate these visuals. These reports are generated after termination of contact. There is one that displays the average of several soft phone metrics, count of soft phone errors, average packet loss and average packet loss percentage, round trip time (RTT) or latency and jitter buffer in milliseconds over time.</p>
-
-<figure>
-	<img src="../en/user-guide/splunk-dashboard-2.png?classes=shadow&width=60pc" alt="Splunk search interface" />
+    <img src="kibana-discover-4.png"/> <figcaption>
+            <h4>Discover dashboard 4</h4>
+        </figcaption>
 </figure>
-<p>Under the Historical Report &amp; Soft Phone Metrics tab, similar metrics as above can be viewed by agent. Agents’ can be selected from a dropdown list. These dashboards use both the soft phone call log reports and real time softphone stream statistics.</p>
+
+
+#### Drill down dashboard
+
+
+To make the filter and investigation easier, we’ve built another dashboard call the “drilled down dashboard”. Here you can filter based on a few of the key attributes. For example if you were troubleshooting the long round trip times from the salesQueue you could filter by the Queue attribute and see all the records in the salesQueue. You can then apply another filter for RTT (round trip time) to filter for all the records greater than 500 RTT. 
+
+Once the records have been filtered you can investigate the records to see if there are any patterns. For a detailed list of data model for these records please refer to the [data model documentation](https://quip-amazon.com/ikTTAaZwFGrb/Data-model). 
+
+Another useful way of using the drill down dashboard is when a particular agent is reporting poor audio quality, you can filter by the agent and look at all the records from the agent and troubleshoot using the data provided in the record. 
+<figure>
+    <img src="kibana-drilldown-1.png"/> <figcaption>
+            <h4>Drill down dashboard 4</h4>
+        </figcaption>
+</figure>
+
+
+### Splunk
+
+#### Dashboards
+
+Under the Agent Metrics tab, the Agents Stats dashboard has a few panels. The panels use the soft phone call log report to generate these visuals. These reports are generated after termination of contact. There is one that displays the average of several soft phone metrics, count of soft phone errors, average packet loss and average packet loss percentage, round trip time (RTT) or latency and jitter buffer in milliseconds over time.
 
 <figure>
-	<img src="../en/user-guide/splunk-dashboard-3.png?classes=shadow&width=60pc" alt="Splunk search interface" />
+    <img src="splunk-dashboard-2.png"/> <figcaption>
+            <h4>Splunk search interface</h4>
+        </figcaption>
 </figure>
-<p>The connect real time view also has a panel that generates statistics to display geographic data and summarize the soft phone errors on maps.</p>
+
+
+Under the Historical Report & Soft Phone Metrics tab, similar metrics as above can be viewed by agent. Agents’ can be selected from a dropdown list. These dashboards use both the soft phone call log reports and real time softphone stream statistics.
 
 <figure>
-	<img src="../en/user-guide/splunk-dashboard-4.png?classes=shadow&width=60pc" alt="Splunk search interface" />
+    <img src="splunk-dashboard-3.png"/> <figcaption>
+            <h4>Splunk search interface</h4>
+        </figcaption>
 </figure>
-<p>Soft phone call log report statistics by contact record are also available in the detailed view panel under the contact records dashboard.</p>
+
+
+The connect real time view also has a panel that generates statistics to display geographic data and summarize the soft phone errors on maps.
 
 <figure>
-	<img src="../en/user-guide/splunk-dashboard-5.png?classes=shadow&width=60pc" alt="Splunk search interface" />
+    <img src="splunk-dashboard-4.png"/> <figcaption>
+            <h4>Splunk search interface</h4>
+        </figcaption>
 </figure>
+
+
+Soft phone call log report statistics by contact record are also available in the detailed view panel under the contact records dashboard.
+
+<figure>
+    <img src="splunk-dashboard-5.png"/> <figcaption>
+            <h4>Splunk search interface</h4>
+        </figcaption>
+</figure>
+ -->
 
 
 
@@ -483,14 +640,10 @@ The visualization shown long round trip time for the salesQueue in the technical
                     
 
                     
-            
-        
-                    
                         
             
             
                 
-                    
                     
                 
                 
@@ -508,8 +661,76 @@ The visualization shown long round trip time for the salesQueue in the technical
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
                         
                         
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
                     
                 
                 
@@ -563,10 +784,10 @@ The visualization shown long round trip time for the salesQueue in the technical
 	 
 	 
 		
-			<a class="nav nav-prev" href="../en/deployment-guide.html" title="Deployment Guide"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="../en/deployment-guide/splunk.html" title="Splunk"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="../en/application-architecture.html" title="Application Architecture" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="../en/user-guide/elasticsearch.html" title="Amazon Elasticsearch" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

@@ -14,23 +14,23 @@
   <link rel="shortcut icon" href="https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" type="image/ico" />
 <link rel="icon" href="https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" type="image/ico" />
 
-  <title>Deployment Guide :: My AWS Workshop</title>
+  <title>Amazon Elasticsearch :: My AWS Workshop</title>
 
   
-  <link href="../css/nucleus.css" rel="stylesheet">
-  <link href="../css/fontawesome-all.min.css" rel="stylesheet">
-  <link href="../css/hybrid.css" rel="stylesheet">
-  <link href="../css/featherlight.min.css" rel="stylesheet">
-  <link href="../css/perfect-scrollbar.min.css" rel="stylesheet">
-  <link href="../css/auto-complete.css" rel="stylesheet">
-  <link href="../css/atom-one-dark-reasonable.css" rel="stylesheet">
-  <link href="../css/theme.css" rel="stylesheet">
-  <link href="../css/hugo-theme.css" rel="stylesheet">
+  <link href="../../css/nucleus.css" rel="stylesheet">
+  <link href="../../css/fontawesome-all.min.css" rel="stylesheet">
+  <link href="../../css/hybrid.css" rel="stylesheet">
+  <link href="../../css/featherlight.min.css" rel="stylesheet">
+  <link href="../../css/perfect-scrollbar.min.css" rel="stylesheet">
+  <link href="../../css/auto-complete.css" rel="stylesheet">
+  <link href="../../css/atom-one-dark-reasonable.css" rel="stylesheet">
+  <link href="../../css/theme.css" rel="stylesheet">
+  <link href="../../css/hugo-theme.css" rel="stylesheet">
   
-  <link href="../css/theme-aws.css" rel="stylesheet">
+  <link href="../../css/theme-aws.css" rel="stylesheet">
   
 
-  <script src="../js/jquery-3.3.1.min.js"></script>
+  <script src="../../js/jquery-3.3.1.min.js"></script>
 
   <style>
     :root #header + #content > #left > #rlblock_left{
@@ -45,7 +45,7 @@
   
 </head>
 
-<body class="" data-url="../en/deployment-guide.html">
+<body class="" data-url="../../en/deployment-guide/elasticsearch.html">
   <nav id="sidebar" class="">
 
 
@@ -53,8 +53,8 @@
   <div id="header-wrapper">
     <div id="header">
       <div>
-    <a href="../" title="Go home">
-        <img style="vertical-align:middle" src="../images/logo.png" height="70px" />
+    <a href="../../" title="Go home">
+        <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
     </a>
 </div>
 
@@ -66,14 +66,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="../js/lunr.min.js"></script>
-<script type="text/javascript" src="../js/auto-complete.js"></script>
+<script type="text/javascript" src="../../js/lunr.min.js"></script>
+<script type="text/javascript" src="../../js/auto-complete.js"></script>
 <script type="text/javascript">
     
         var baseurl = "\/en";
     
 </script>
-<script type="text/javascript" src="../js/search.js"></script>
+<script type="text/javascript" src="../../js/search.js"></script>
 
     
   </div>
@@ -91,10 +91,10 @@
     
     <li data-nav-id="/en/deployment-guide.html" title="Deployment Guide" class="dd-item 
         parent
-        active
+        
         
         ">
-      <a href="../en/deployment-guide.html">
+      <a href="../../en/deployment-guide.html">
           <b>1. </b>Deployment Guide
           
       </a>
@@ -114,8 +114,8 @@
  
   
     
-      <li data-nav-id="/en/deployment-guide/elasticsearch.html" title="Amazon Elasticsearch" class="dd-item ">
-        <a href="../en/deployment-guide/elasticsearch.html">
+      <li data-nav-id="/en/deployment-guide/elasticsearch.html" title="Amazon Elasticsearch" class="dd-item active">
+        <a href="../../en/deployment-guide/elasticsearch.html">
         Amazon Elasticsearch
         
         </a>
@@ -134,7 +134,7 @@
   
     
       <li data-nav-id="/en/deployment-guide/splunk.html" title="Splunk" class="dd-item ">
-        <a href="../en/deployment-guide/splunk.html">
+        <a href="../../en/deployment-guide/splunk.html">
         Splunk
         
         </a>
@@ -164,7 +164,7 @@
         
         
         ">
-      <a href="../en/user-guide.html">
+      <a href="../../en/user-guide.html">
           <b>2. </b>User Guide
           
       </a>
@@ -185,7 +185,7 @@
   
     
       <li data-nav-id="/en/user-guide/elasticsearch.html" title="Amazon Elasticsearch" class="dd-item ">
-        <a href="../en/user-guide/elasticsearch.html">
+        <a href="../../en/user-guide/elasticsearch.html">
         Amazon Elasticsearch
         
         </a>
@@ -204,7 +204,7 @@
   
     
       <li data-nav-id="/en/user-guide/splunk.html" title="Splunk" class="dd-item ">
-        <a href="../en/user-guide/splunk.html">
+        <a href="../../en/user-guide/splunk.html">
         Splunk
         
         </a>
@@ -234,7 +234,7 @@
         
         
         ">
-      <a href="../en/application-architecture.html">
+      <a href="../../en/application-architecture.html">
           <b>3. </b>Application Architecture
           
       </a>
@@ -256,7 +256,7 @@
         
         
         ">
-      <a href="../en/data-model.html">
+      <a href="../../en/data-model.html">
           <b>4. </b>Data Model
           
       </a>
@@ -278,7 +278,7 @@
         
         
         ">
-      <a href="../en/operations-guide.html">
+      <a href="../../en/operations-guide.html">
           <b>5. </b>Operations Guide
           
       </a>
@@ -335,6 +335,8 @@
               </a>
             </span>
             
+            <span id="toc-menu"><i class="fa fa-list-alt"></i></span>
+            
             <span class="links">
               
           
@@ -343,7 +345,13 @@
           
           
           
-          <a href='../en/'>Monitoring call quality on Amazon Connect</a> > Deployment Guide
+          
+          
+          
+          
+          <a href='../../en/'>Monitoring call quality on Amazon Connect</a> > <a href='../../en/deployment-guide.html'>Deployment Guide</a> > Amazon Elasticsearch
+          
+          
           
           
           
@@ -351,44 +359,122 @@
             </span>
           </div>
           
+          <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#deployment-steps">Deployment Steps</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+          
         </div>
       </div>
       
 
       
-      <div id="chapter">
-        
         <div id="body-inner">
-          <h1>Deployment Guide</h1>
+          <h1>Amazon Elasticsearch</h1>
           
           
 
 
-
-	<h2 id="preconditions">Preconditions</h2>
-<ul>
-<li>
-<p>An AWS account. For steps to create, check: <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/</a></p>
-</li>
-<li>
-<p>An Amazon Connect instance.  To create a Connect instance, follow this guide: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html">https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html</a></p>
-</li>
-</ul>
 <h2 id="deployment-steps">Deployment Steps</h2>
-<p>This solution supports Amazon Elasticsearch or Splunk as the backend data store and visualization layer. Follow the appropriate guide for your choice of data store:</p>
-<p>Deployment guide for <a href="../en/deployment-guide/elasticsearch.html">Amazon Elasticsearch </a>.</p>
-<p>Deployment guide for <a href="../en/deployment-guide/splunk.html">Splunk</a>.</p>
+<ol>
+<li><a href="https://serverlessrepo.aws.amazon.com/applications/us-west-2/287087860234/AmazonConnectMonitoringSolution" target="_blank">Click here</a> to go to the application page in the AWS Serverless Repository (SAR).</li>
+<li>Click the deploy button on the right.</li>
+</ol>
+<figure>
+    <img src="./SAR-app-screenshot.png"/> <figcaption>
+            <h4>Steve Francia</h4>
+        </figcaption>
+</figure>
+
+<ol>
+<li>You will be directed to the deployment page, which include a ReadMe and Application settings.</li>
+</ol>
+
+<div class="notices note" ><p>By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region. The solution works in all regions Amazon Connect is available in.</p>
+</div>
+
+<figure>
+    <img src="SAR-deploy-page.png"/> <figcaption>
+            <h4>SAR deploy page</h4>
+        </figcaption>
+</figure>
+
+<ol>
+<li>Put the CCP url,  in the Application settings, tick the check box and deploy.</li>
+<li>If your Amazon Connect requires SAML federation please provide SAML login URL in the SAML URL parameter.</li>
+<li>Please leave the Splunk URL and Splunk Token values blank
+
+<div class="notices warning" ><p>CcpUrl: The URL in the format https://*/ccp-v2.</p>
+</div>
 
 
+<div class="notices warning" ><p>Note that the CCP-v2 must be used.</p>
+</div>
+</li>
+</ol>
 
+<div class="notices warning" ><p>Please leave the Splunk Token and Splunk URL values blank</p>
+</div>
+
+<figure>
+    <img src="SAR-deploy-params.png"/> <figcaption>
+            <h4>SAR deploy params</h4>
+        </figcaption>
+</figure>
+
+
+<div class="notices note" ><p>Please allow up to 45 minutes for the solution to deploy.</p>
+</div>
+
+<p>Once the SAR app has finished to deploy.</p>
+<ol>
+<li>The output URLs of the resources are stored in the Parameter store, go to the region for SSM parameter store where you’ve launched the stack
+<ol>
+<li>Example URL for us-west-2:  <a href="https://us-west-2.console.aws.amazon.com/systems-manager/parameters/?region=us-west-2&amp;tab=Table" target="_blank">https://console.aws.amazon.com/systems-manager/parameters/?region=us-west-2&amp;tab=Table</a></li>
+</ol>
+</li>
+<li>In the SSM parameters there is:
+<ol>
+<li>URL to create a user from the created Amazon Cognito User Pool (UserCreationUrl)</li>
+<li>Kibana URL (KibanaUrl) where you can open up the dashboard,</li>
+<li>Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.</li>
+</ol>
+</li>
+</ol>
+<p>Creating a user in the user pool is necessary to access Kibana. Following the Kibana URL, you will gain access to the visual user interface for the data stored in ElasticSearch.</p>
+<ol>
+<li>Click the UserCreationUrl and follow the steps create a user for Kibana
+<ol>
+<li>Cognito here is used to manage access to Kibana, the users created in the Cognito User pool are sepereate users to the users from Amazon Connect.</li>
+</ol>
+</li>
+<li>Go to <a href="https://console.aws.amazon.com/connect/home?region=us-east-1" target="_blank">AWS Console → Amazon Connect</a>, choose the Connect instance and insert the Cloudfront URL in the application integration section by clicking on the “add origin” button.</li>
+</ol>
+<figure>
+    <img src="Allowlist-CF.png"/> <figcaption>
+            <h4>Add Origin</h4>
+        </figcaption>
+</figure>
+
+<ol>
+<li>Click the Cloudfront URL, this should open the custom CCP website.</li>
+<li>Login with your connect user and make/receive a call</li>
+<li>Metrics will be published and visible in you the Kibana Dashboard</li>
+</ol>
+<p>For more details on how to use the solution please check out the <a href="../../en/user-guide.html" title="User Guide">user guide</a>.</p>
 
 
 <footer class=" footline" >
 	
 </footer>
 
-        
-            </div> 
+
         
         </div> 
         
@@ -420,6 +506,8 @@
             
                 
                     
+                        
+                        
                     
                 
                 
@@ -434,8 +522,6 @@
             
                 
                     
-                        
-                        
                     
                 
                 
@@ -452,6 +538,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -572,10 +661,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="../en/" title="Monitoring call quality on Amazon Connect"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="../../en/deployment-guide.html" title="Deployment Guide"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="../en/deployment-guide/elasticsearch.html" title="Amazon Elasticsearch" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="../../en/deployment-guide/splunk.html" title="Splunk" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -585,20 +674,20 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="../js/clipboard.min.js"></script>
-    <script src="../js/perfect-scrollbar.min.js"></script>
-    <script src="../js/perfect-scrollbar.jquery.min.js"></script>
-    <script src="../js/jquery.sticky.js"></script>
-    <script src="../js/featherlight.min.js"></script>
-    <script src="../js/html5shiv-printshiv.min.js"></script>
-    <script src="../js/highlight.pack.js"></script>
+    <script src="../../js/clipboard.min.js"></script>
+    <script src="../../js/perfect-scrollbar.min.js"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="../../js/jquery.sticky.js"></script>
+    <script src="../../js/featherlight.min.js"></script>
+    <script src="../../js/html5shiv-printshiv.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="../js/modernizr.custom-3.6.0.js"></script>
-    <script src="../js/learn.js"></script>
-    <script src="../js/hugo-learn.js"></script>
+    <script src="../../js/modernizr.custom-3.6.0.js"></script>
+    <script src="../../js/learn.js"></script>
+    <script src="../../js/hugo-learn.js"></script>
 
-    <link href="../mermaid/mermaid.css" rel="stylesheet" />
-    <script src="../mermaid/mermaid.js"></script>
+    <link href="../../mermaid/mermaid.css" rel="stylesheet" />
+    <script src="../../mermaid/mermaid.js"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
@@ -610,6 +699,7 @@
 <div id = 'versions' title = ""/></div>
 
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
-<script src="../js/kinesis.js"></script>
+<script src="../../js/kinesis.js"></script>
   </body>
 </html>
+

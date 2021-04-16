@@ -7,5 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Wed, 30 Sep 2020 21:03:27 +1000</lastBuildDate><atom:link href="/en/deployment-guide/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Amazon Elasticsearch</title>
+      <link>/en/deployment-guide/elasticsearch.html</link>
+      <pubDate>Fri, 16 Apr 2021 11:37:33 -0700</pubDate>
+      
+      <guid>/en/deployment-guide/elasticsearch.html</guid>
+      <description>Deployment Steps  Click here to go to the application page in the AWS Serverless Repository (SAR). Click the deploy button on the right.    Steve Francia    You will be directed to the deployment page, which include a ReadMe and Application settings.  By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region.</description>
+    </item>
+    
+    <item>
+      <title>Splunk</title>
+      <link>/en/deployment-guide/splunk.html</link>
+      <pubDate>Fri, 16 Apr 2021 11:37:38 -0700</pubDate>
+      
+      <guid>/en/deployment-guide/splunk.html</guid>
+      <description>Deployment Steps  Click here to go to the application page in the AWS Serverless Repository (SAR). Click the deploy button on the right.    Steve Francia    You will be directed to the deployment page, which include a ReadMe and Application settings.  By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region.</description>
+    </item>
+    
   </channel>
 </rss>

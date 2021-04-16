@@ -6,6 +6,43 @@
     <description>Recent content in Monitoring call quality on Amazon Connect on My AWS Workshop</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Thu, 01 Oct 2020 14:50:37 +1000</lastBuildDate><atom:link href="/en/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Apr 2021 11:37:38 -0700</lastBuildDate><atom:link href="/en/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Amazon Elasticsearch</title>
+      <link>/en/user-guide/elasticsearch.html</link>
+      <pubDate>Fri, 16 Apr 2021 11:37:38 -0700</pubDate>
+      
+      <guid>/en/user-guide/elasticsearch.html</guid>
+      <description>Record the output URLs of the resources are stored in the Simple Server Manager (SSM) Parameter store, go to the region for SSM parameter store where you’ve launched the stack.  Kibana URL (KibanaUrl) where you can open up the dashboard, URL to create a user from the created Amazon Cognito User Pool (UserCreationUrl) Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.    Testing the deployment  Make an outbound call from the Cloudfront URL, after 30 seconds you should start to see metrics flowing into Elastic Search/Kibana/Splunk  Amazon Elasticsearch  There are three dashboards that gets deployed   “Business user - queue based dashboard” “Technical user - queue based” “Drill down dashboard”.</description>
+    </item>
+    
+    <item>
+      <title>Amazon Elasticsearch</title>
+      <link>/en/deployment-guide/elasticsearch.html</link>
+      <pubDate>Fri, 16 Apr 2021 11:37:33 -0700</pubDate>
+      
+      <guid>/en/deployment-guide/elasticsearch.html</guid>
+      <description>Deployment Steps  Click here to go to the application page in the AWS Serverless Repository (SAR). Click the deploy button on the right.    Steve Francia    You will be directed to the deployment page, which include a ReadMe and Application settings.  By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region.</description>
+    </item>
+    
+    <item>
+      <title>Splunk</title>
+      <link>/en/deployment-guide/splunk.html</link>
+      <pubDate>Fri, 16 Apr 2021 11:37:38 -0700</pubDate>
+      
+      <guid>/en/deployment-guide/splunk.html</guid>
+      <description>Deployment Steps  Click here to go to the application page in the AWS Serverless Repository (SAR). Click the deploy button on the right.    Steve Francia    You will be directed to the deployment page, which include a ReadMe and Application settings.  By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region.</description>
+    </item>
+    
+    <item>
+      <title>Splunk</title>
+      <link>/en/user-guide/splunk.html</link>
+      <pubDate>Fri, 16 Apr 2021 11:37:38 -0700</pubDate>
+      
+      <guid>/en/user-guide/splunk.html</guid>
+      <description>Record the output URLs of the resources are stored in the Simple Server Manager (SSM) Parameter store, go to the region for SSM parameter store where you’ve launched the stack.
+ Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.    Successful deployment of SAR application, confirm both softphonecallreport and softphonestreamstats events are successfully ingested into Splunk HEC input via Kinesis Data Firehose.</description>
+    </item>
+    
   </channel>
 </rss>

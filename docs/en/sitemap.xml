@@ -4,7 +4,7 @@
   
   <url>
     <loc>/en/</loc>
-    <lastmod>2020-10-01T14:50:37+10:00</lastmod>
+    <lastmod>2021-04-16T11:37:38-07:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
@@ -18,8 +18,28 @@
   </url>
   
   <url>
+    <loc>/en/user-guide/elasticsearch.html</loc>
+    <lastmod>2021-04-16T11:37:38-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/en/deployment-guide/elasticsearch.html</loc>
+    <lastmod>2021-04-16T11:37:33-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/en/deployment-guide.html</loc>
     <lastmod>2020-09-30T21:03:27+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/en/deployment-guide/splunk.html</loc>
+    <lastmod>2021-04-16T11:37:38-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/en/user-guide/splunk.html</loc>
+    <lastmod>2021-04-16T11:37:38-07:00</lastmod>
   </url>
   
   <url>
