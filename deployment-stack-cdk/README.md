@@ -8,6 +8,14 @@ If you use SAML to authenticate users, enter your SAML URL. If not, leave this f
 
 Then click deploy! For a guide with pictures please follow the link to our  [GitHub Repo](https://github.com/amazon-connect/amazon-connect-call-quality-monitoring)
 
+### Amazon Elasticsearch
+
+By default the stack deploys an Amazon Elasticsearch cluster to store and visualize the telemetry data.  
+
+### Splunk
+
+If you would like to integrate with your existing Splunk cluster please provide your Splunk URL and HEC token.
+
 ## Post-Deploy Steps
 ### Whitelisting your CloudFront URL
 The custom, metrics-enabled softphone is hosted on Cloudfront. To access the custom CCP, we also need to whitelist the CloudFront URL from our Connect instance. We can do this from the AWS Console for Connect. From the console where you found your Instance ID
