@@ -10,6 +10,6 @@ Here are some relevant documents:
 - [Application Architecture](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/application-architecture.html)
 - [Data Model](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/data-model.html)
 - [Operations guide](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/operations-guide.html)
-- [Anomaly detection](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/anomaly-detection.html)
+- [Anomaly detection](https://aws.amazon.com/blogs/machine-learning/real-time-anomaly-detection-for-amazon-connect-call-quality-using-amazon-es/)
 
 If you have any issues please don't hesitate to open up a Github issue. 
