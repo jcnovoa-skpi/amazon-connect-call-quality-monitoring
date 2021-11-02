@@ -363,7 +363,12 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#deployment-steps">Deployment Steps</a></li>
+    <li><a href="#deployment-steps-with-cdk">Deployment Steps with CDK</a>
+      <ul>
+        <li><a href="#install-and-bootstrap-aws-cdk">Install and bootstrap AWS CDK</a></li>
+        <li><a href="#deploying-cdk-project">Deploying CDK project</a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
     </div>
@@ -381,84 +386,69 @@
           
 
 
-<h2 id="deployment-steps">Deployment Steps</h2>
+<h2 id="deployment-steps-with-cdk">Deployment Steps with CDK</h2>
+<h3 id="install-and-bootstrap-aws-cdk">Install and bootstrap AWS CDK</h3>
+<p>Please skip this step if you already have CDK installed and bootstrapped.</p>
+<pre><code>npm install -g aws-cdk
+npm install -g typescript
+
+cdk bootstrap aws://YOUR_ACCOUNT_ID/YOUR_AWS_REGION
+</code></pre><h3 id="deploying-cdk-project">Deploying CDK project</h3>
 <ol>
-<li><a href="https://serverlessrepo.aws.amazon.com/applications/us-west-2/287087860234/AmazonConnectMonitoringSolution" target="_blank">Click here</a> to go to the application page in the AWS Serverless Repository (SAR).</li>
-<li>Click the deploy button on the right.</li>
+<li>Clone the repository from <a href="https://github.com/amazon-connect/amazon-connect-call-quality-monitoring.git" target="_blank">Github</a></li>
 </ol>
-<figure>
-    <img src="./SAR-app-screenshot.png"/> <figcaption>
-            <h4>Steve Francia</h4>
-        </figcaption>
-</figure>
-
-<ol>
-<li>You will be directed to the deployment page, which include a ReadMe and Application settings.</li>
+<p><code>git clone git@github.com:amazon-connect/amazon-connect-call-quality-monitoring.git</code></p>
+<ol start="2">
+<li>Move into the directory of the stack which will deploy the resources</li>
 </ol>
-
-<div class="notices note" ><p>By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region. The solution works in all regions Amazon Connect is available in.</p>
-</div>
-
-<figure>
-    <img src="SAR-deploy-page.png"/> <figcaption>
-            <h4>SAR deploy page</h4>
-        </figcaption>
-</figure>
-
-<ol>
-<li>Put the CCP url,  in the Application settings, tick the check box and deploy.</li>
-<li>If your Amazon Connect requires SAML federation please provide SAML login URL in the SAML URL parameter.</li>
+<p><code>cd Amazon-connect-monitoring/monitoring-stack-cdk</code></p>
+<ol start="3">
+<li>Set your CCP URL (required) and SAML URL (optional)</li>
+</ol>
+<p><code>export CCP_URL=YOURURL</code></p>
+<p>If your Amazon Connect requires SAML federation please provide SAML login URL in the SAML URL parameter (OPTIONAL).</p>
+<p><code>export SAML_URL=YOUR_SAML_ID_URL</code></p>
+<ol start="4">
 <li>Please provide your Splunk endpoint including the port number in the format of:
 <a href="https://xyz.splunk.com">https://xyz.splunk.com</a>:8080</li>
-<li>Please provide your HEC token
-
+</ol>
+<p><code>export SPLUNK_ENDPOINT=https://xyz.splunk.com:8080</code></p>
+<ol start="5">
+<li>Please provide your HEC token</li>
+</ol>
+<p><code>export SPLUNK_TOKEN=xxxxxxxxxxxxxx</code></p>
+<ol start="3">
+<li></li>
+<li></li>
+</ol>
+<p>
 <div class="notices warning" ><p>CcpUrl: The URL in the format https://*/ccp-v2.</p>
 </div>
 
 
 <div class="notices warning" ><p>Note that the CCP-v2 must be used.</p>
 </div>
-</li>
-</ol>
+</p>
 
 <div class="notices warning" ><p>For the Splunk URL please enter your splunk endpoint including port number eg
 <a href="https://xyz.splunk.com">https://xyz.splunk.com</a>:8080</p>
 </div>
 
-<figure>
-    <img src="SAR-deploy-params.png"/> <figcaption>
-            <h4>SAR deploy params</h4>
-        </figcaption>
-</figure>
-
 
 <div class="notices note" ><p>Please allow up to 45 minutes for the solution to deploy.</p>
 </div>
 
-<p>Once the SAR app has finished to deploy.</p>
-<ol>
-<li>The output URLs of the resources are stored in the Parameter store, go to the region for SSM parameter store where you’ve launched the stack
-<ol>
-<li>Example URL for us-west-2:  <a href="https://us-west-2.console.aws.amazon.com/systems-manager/parameters/?region=us-west-2&amp;tab=Table" target="_blank">https://console.aws.amazon.com/systems-manager/parameters/?region=us-west-2&amp;tab=Table</a></li>
-</ol>
-</li>
-<li>In the SSM parameters there is:
-<ol>
-<li>URL to create a user from the created Amazon Cognito User Pool (UserCreationUrl)</li>
-<li>Kibana URL (KibanaUrl) where you can open up the dashboard,</li>
+<p>Once the CDK app has finished to deploy.</p>
+<p>Once the CDK app has finished to deploy. You will see the following outputs in your terminal</p>
+<pre><code>Outputs:
+ConnectMonitoringStack.CLOUDFRONTURL = https://xxxxxxxxxxx.cloudfront.net
+ConnectMonitoringStack.COGNITOURL = &quot;&quot;
+ConnectMonitoringStack.KIBANAURL = &quot;&quot;
+
+</code></pre><ol>
 <li>Cloudfront URL you must whitelist in the Amazon Connect application whitelisting setting.</li>
 </ol>
-</li>
-</ol>
-<p>Creating a user in the user pool is necessary to access Kibana. Following the Kibana URL, you will gain access to the visual user interface for the data stored in ElasticSearch.</p>
-<ol>
-<li>Click the UserCreationUrl and follow the steps create a user for Kibana
-<ol>
-<li>Cognito here is used to manage access to Kibana, the users created in the Cognito User pool are sepereate users to the users from Amazon Connect.</li>
-</ol>
-</li>
-<li>Go to <a href="https://console.aws.amazon.com/connect/home?region=us-east-1" target="_blank">AWS Console → Amazon Connect</a>, choose the Connect instance and insert the Cloudfront URL in the application integration section by clicking on the “add origin” button.</li>
-</ol>
+<p>Go to <a href="https://console.aws.amazon.com/connect/home?region=us-east-1" target="_blank">AWS Console → Amazon Connect</a>, choose the Connect instance and insert the Cloudfront URL in the application integration section by clicking on the “add origin” button.</p>
 <figure>
     <img src="Allowlist-CF.png"/> <figcaption>
             <h4>Add Origin</h4>
@@ -468,7 +458,7 @@
 <ol>
 <li>Click the Cloudfront URL, this should open the custom CCP website.</li>
 <li>Login with your connect user and make/receive a call</li>
-<li>Metrics will be published and visible in you the Kibana Dashboard</li>
+<li>Metrics will be published and visible in you the Splunk Dashboard</li>
 </ol>
 <p>For more details on how to use the solution please check out the <a href="../../en/user-guide.html" title="User Guide">user guide</a>.</p>
 

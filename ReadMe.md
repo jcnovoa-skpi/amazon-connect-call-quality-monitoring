@@ -23,13 +23,6 @@ cdk deploy --require-approval never
 ```
 
 
-
-To deploy the solution, [click here](https://serverlessrepo.aws.amazon.com/applications/us-west-2/287087860234/AmazonConnectMonitoringSolution) to go to the application page in the AWS Serverless Repository. 
-
-
-
-
-
 Here are some relevant documents:
 
 - [Deployment guide](https://amazon-connect.github.io/amazon-connect-call-quality-monitoring/en/deployment-guide.html)

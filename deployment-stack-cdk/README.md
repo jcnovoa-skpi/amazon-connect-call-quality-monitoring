@@ -1,3 +1,5 @@
+# This stack has been deprecated
+
 # Amazon Connect Monitoring Deployment Guide
 ## Deploying the app
 ### CCP URL

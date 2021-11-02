@@ -28,7 +28,7 @@ export default class MonitoringStack extends cdk.Stack {
       || !ccpUrl.includes('/ccp-v2') ) {
         throw(new Error('CCP URL must be the https:// url to your ccp-v2 softphone'));
       }
-    const cfnResponse = process.env.CFN_RESPONSE_DATA === undefined ? '' : process.env.CFN_RESPONSE_DATA;
+      
     const streamsBucket = new s3.Bucket(this, 'StreamsBucket', {
       websiteIndexDocument: 'index.html',
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -72,31 +72,16 @@ export default class MonitoringStack extends cdk.Stack {
       streamsDistribution: distribution,
     });
 
-    const sarStackConfirmer = new lambda.Function(this, 'SAR Custom Resource Confirmer', {
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.fromAsset('./resources/custom-resources/sar-confirmer'),
-      environment: {
-        CFN_RESPONSE_PAYLOAD: cfnResponse!,
-        COGNITO_URL: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getUserCreateUrl(),
-        KIBANA_URL: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getKibanaUrl(),
-        CLOUDFRONT_URL: distribution.distributionDomainName,
-      },
-      timeout: cdk.Duration.minutes(2),
-    });
+    new cdk.CfnOutput(this, 'COGNITO_URL', {
+      value: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getUserCreateUrl().toString(),
+    }); 
+    
+    new cdk.CfnOutput(this, 'KIBANA_URL', {
+      value: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getKibanaUrl().toString(),
+    }); 
 
-    sarStackConfirmer.node.addDependency(streamsApiDeployment);
-    if(elasticsearchStackDeployment != undefined) {
-      sarStackConfirmer.node.addDependency(elasticsearchStackDeployment!);
-    }
-    sarStackConfirmer.node.addDependency(metricsApiStackDeployment);
-
-    const provider = new customResource.Provider(this, 'SAR Custom Resource Confirmer Provider', {
-      onEventHandler: sarStackConfirmer,
-    });
-
-    new cdk.CustomResource(this, 'SAR Custom Resource Confirmer Trigger', {
-      serviceToken: provider.serviceToken,
-    });
+    new cdk.CfnOutput(this, 'CLOUDFRONT_URL', {
+      value: "https://" + distribution.distributionDomainName.toString(),
+    }); 
   }
 }

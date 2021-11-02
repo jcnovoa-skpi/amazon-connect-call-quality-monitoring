@@ -22,7 +22,10 @@
       <pubDate>Fri, 16 Apr 2021 11:37:33 -0700</pubDate>
       
       <guid>/en/deployment-guide/elasticsearch.html</guid>
-      <description>Deployment Steps  Click here to go to the application page in the AWS Serverless Repository (SAR). Click the deploy button on the right.    Steve Francia    You will be directed to the deployment page, which include a ReadMe and Application settings.  By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region.</description>
+      <description>Deployment Steps with CDK Install and bootstrap AWS CDK Please skip this step if you already have CDK installed and bootstrapped.
+npm install -g aws-cdk npm install -g typescript cdk bootstrap aws://YOUR_ACCOUNT_ID/YOUR_AWS_REGION Deploying CDK project  Clone the repository from Github  git clone git@github.com:amazon-connect/amazon-connect-call-quality-monitoring.git
+Move into the directory of the stack which will deploy the resources  cd Amazon-connect-monitoring/monitoring-stack-cdk
+Set your CCP URL (required) and SAML URL (optional)  export CCP_URL=YOURURL</description>
     </item>
     
     <item>
@@ -31,7 +34,10 @@
       <pubDate>Fri, 16 Apr 2021 11:37:38 -0700</pubDate>
       
       <guid>/en/deployment-guide/splunk.html</guid>
-      <description>Deployment Steps  Click here to go to the application page in the AWS Serverless Repository (SAR). Click the deploy button on the right.    Steve Francia    You will be directed to the deployment page, which include a ReadMe and Application settings.  By default, the application will be deployed in us-east-1 region, change the AWS console via the region drop down in the top right of the console to your desired region to deploy this solution to another region.</description>
+      <description>Deployment Steps with CDK Install and bootstrap AWS CDK Please skip this step if you already have CDK installed and bootstrapped.
+npm install -g aws-cdk npm install -g typescript cdk bootstrap aws://YOUR_ACCOUNT_ID/YOUR_AWS_REGION Deploying CDK project  Clone the repository from Github  git clone git@github.com:amazon-connect/amazon-connect-call-quality-monitoring.git
+Move into the directory of the stack which will deploy the resources  cd Amazon-connect-monitoring/monitoring-stack-cdk
+Set your CCP URL (required) and SAML URL (optional)  export CCP_URL=YOURURL</description>
     </item>
     
     <item>
