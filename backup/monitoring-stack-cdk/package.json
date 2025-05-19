@@ -1,0 +1,46 @@
+{
+  "name": "metricscdk",
+  "version": "1.0.0",
+  "bin": {
+    "metricscdk": "bin/metricscdk.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.61.1",
+    "@types/jest": "^26.0.14",
+    "@types/node": "10.17.5",
+    "aws-cdk": "^1.61.1",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.4.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.61.1",
+    "@aws-cdk/aws-cloudformation": "^1.61.1",
+    "@aws-cdk/aws-cloudfront": "^1.61.1",
+    "@aws-cdk/aws-cognito": "^1.61.1",
+    "@aws-cdk/aws-dynamodb": "^1.61.1",
+    "@aws-cdk/aws-elasticsearch": "^1.61.1",
+    "@aws-cdk/aws-events": "^1.61.1",
+    "@aws-cdk/aws-events-targets": "^1.61.1",
+    "@aws-cdk/aws-iam": "^1.61.1",
+    "@aws-cdk/aws-kinesis": "^1.61.1",
+    "@aws-cdk/aws-kinesisfirehose": "^1.61.1",
+    "@aws-cdk/aws-lambda": "^1.61.1",
+    "@aws-cdk/aws-lambda-event-sources": "^1.61.1",
+    "@aws-cdk/aws-logs": "^1.61.1",
+    "@aws-cdk/aws-s3": "^1.61.1",
+    "@aws-cdk/aws-s3-deployment": "^1.61.1",
+    "@aws-cdk/core": "^1.61.1",
+    "@aws-cdk/custom-resources": "^1.61.1",
+    "@types/uuid": "^7.0.4",
+    "cdk": "^1.61.1",
+    "source-map-support": "^0.5.19",
+    "uuid": "^7.0.3"
+  }
+}

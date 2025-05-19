@@ -1,19 +1,20 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import * as cdk from '@aws-cdk/core';
+import { Stack, App, CfnOutput, Duration } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import { StreamsGeneratorStack } from './streamsgenerator-stack';
 import { MetricApiStack } from './metricapi-stack';
-import cloudfront = require('@aws-cdk/aws-cloudfront');
-import customResource = require('@aws-cdk/custom-resources');
-import lambda = require('@aws-cdk/aws-lambda');
-import s3 = require('@aws-cdk/aws-s3');
-import s3deployment = require('@aws-cdk/aws-s3-deployment');
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as customResource from 'aws-cdk-lib/custom-resources';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3deployment from 'aws-cdk-lib/aws-s3-deployment';
 import elasticSearchStack = require('./elasticsearch-stack');
 
-export default class MonitoringStack extends cdk.Stack {
-  constructor(app: cdk.App, id: string) {
-    super(app, id);
+export default class MonitoringStack extends Stack {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
     const customStreamsUrl = process.env.STREAMS_URL;
     if (customStreamsUrl != undefined &&
@@ -28,60 +29,60 @@ export default class MonitoringStack extends cdk.Stack {
       || !ccpUrl.includes('/ccp-v2') ) {
         throw(new Error('CCP URL must be the https:// url to your ccp-v2 softphone'));
       }
-      
+
+    // Make OpenSearch deployment optional
+    const deployOpenSearch = process.env.DEPLOY_OPENSEARCH !== 'false';
+    
+    const elasticsearchStackDeployment = 
+      (process.env.ES_DOMAIN_ENDPOINT == undefined && deployOpenSearch) ? 
+        new elasticSearchStack.ElasticSearchStack(this, 'ElasticSearchStack', {
+          ccpUrl,
+        }) : undefined;
+
+    // Create S3 bucket with website hosting enabled but without public access
     const streamsBucket = new s3.Bucket(this, 'StreamsBucket', {
       websiteIndexDocument: 'index.html',
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      encryption: s3.BucketEncryption.S3_MANAGED,
-      versioned: true,
+      websiteErrorDocument: 'error.html',
+      // Remove publicReadAccess: true
     });
-    const streamsAsset = s3deployment.Source.asset('./resources/frontend');
-    const streamsDistributionOai = new cloudfront.OriginAccessIdentity(this, 'StreamsBucketOAI', {});
 
-    const distribution = new cloudfront.CloudFrontWebDistribution(this, 'StreamsDistribution', {
+    const streamsDistribution = new cloudfront.CloudFrontWebDistribution(this, 'StreamsDistribution', {
       originConfigs: [
         {
           s3OriginSource: {
             s3BucketSource: streamsBucket,
-            originAccessIdentity: streamsDistributionOai,
+            // Add origin access identity to allow CloudFront to access the bucket
+            originAccessIdentity: new cloudfront.OriginAccessIdentity(this, 'StreamsBucketOAI')
           },
           behaviors: [{ isDefaultBehavior: true }],
         },
       ],
     });
 
-    const elasticsearchStackDeployment = 
-      process.env.SPLUNK_ENDPOINT == undefined ||
-      process.env.SPLUNK_ENDPOINT == '' 
-      ? new elasticSearchStack.ElasticSearchStack(this, 'ElasticsearchStack', {
-        ccpUrl,
-      })
-      : undefined;
-
-    const metricsApiStackDeployment = new MetricApiStack(this, 'MetricsApiStack', {
+    const metricApiStack = new MetricApiStack(this, 'MetricApiStack', {
       elasticsearchArn: elasticsearchStackDeployment == undefined ? undefined : elasticsearchStackDeployment!.elasticsearchArn,
-      streamsDistribution: distribution,
-      customStreamsUrl: customStreamsUrl
+      streamsDistribution,
+      customStreamsUrl,
     });
 
-    const streamsApiDeployment = new StreamsGeneratorStack(this, 'DynamicFrontendStack', {
-      api: metricsApiStackDeployment.api,
+    const streamsGeneratorStack = new StreamsGeneratorStack(this, 'StreamsGeneratorStack', {
       ccpUrl,
-      streamsAsset,
+      api: metricApiStack.api,
       streamsBucket,
-      streamsDistribution: distribution,
+      streamsDistribution,
+      streamsAsset: s3deployment.Source.asset('./resources/streams'),
     });
 
-    new cdk.CfnOutput(this, 'COGNITO_URL', {
-      value: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getUserCreateUrl().toString(),
-    }); 
-    
-    new cdk.CfnOutput(this, 'KIBANA_URL', {
-      value: elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment == undefined ? "" : elasticsearchStackDeployment!.getKibanaUrl().toString(),
-    }); 
+    new CfnOutput(this, 'StreamsUrl', {
+      value: `https://${streamsDistribution.distributionDomainName}`,
+    });
 
-    new cdk.CfnOutput(this, 'CLOUDFRONT_URL', {
-      value: "https://" + distribution.distributionDomainName.toString(),
-    }); 
+    new CfnOutput(this, 'UserCreateUrl', {
+      value: elasticsearchStackDeployment == undefined ? "OpenSearch not deployed" : elasticsearchStackDeployment!.getUserCreateUrl().toString(),
+    });
+
+    new CfnOutput(this, 'KibanaUrl', {
+      value: elasticsearchStackDeployment == undefined ? "OpenSearch not deployed" : elasticsearchStackDeployment!.getKibanaUrl().toString(),
+    });
   }
 }

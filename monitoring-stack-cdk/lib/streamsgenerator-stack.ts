@@ -1,16 +1,16 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import * as cdk from '@aws-cdk/core';
-import * as cfn from '@aws-cdk/aws-cloudformation';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as apigateway from '@aws-cdk/aws-apigateway';
-import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import { NestedStack, Duration, CustomResource } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as uuid from 'uuid';
-import * as s3deployment from '@aws-cdk/aws-s3-deployment';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iam from '@aws-cdk/aws-iam';
-import * as customResources from '@aws-cdk/custom-resources';
+import * as s3deployment from 'aws-cdk-lib/aws-s3-deployment';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as customResources from 'aws-cdk-lib/custom-resources';
 
 export interface StreamsGeneratorStackProps {
   ccpUrl: string,
@@ -20,10 +20,10 @@ export interface StreamsGeneratorStackProps {
   streamsAsset: s3deployment.ISource
 }
 
-export class StreamsGeneratorStack extends cfn.NestedStack {
-  public customResource: cdk.CustomResource;
+export class StreamsGeneratorStack extends NestedStack {
+  public customResource: CustomResource;
 
-  constructor(scope: cdk.Construct, id: string, props: StreamsGeneratorStackProps) {
+  constructor(scope: Construct, id: string, props: StreamsGeneratorStackProps) {
     super(scope, id);
 
     /* Create a map which contains the URLs of the S3 Website and API Gateway */
@@ -32,7 +32,6 @@ export class StreamsGeneratorStack extends cfn.NestedStack {
       {
         CcpUrl: { enumerable: true, value: props.ccpUrl },
         ApiGatewayUrl: { enumerable: true, value: props.api.url },
-        S3WebsiteUrl: { enumerable: true, value: props.streamsBucket.bucketWebsiteUrl },
         S3Bucket: { enumerable: true, value: props.streamsBucket.bucketName },
         Random: { enumerable: true, value: JSON.stringify(uuid.v4()) },
         SamlUrl: { enumerable: true, value: process.env.SAML_URL },
@@ -46,10 +45,10 @@ export class StreamsGeneratorStack extends cfn.NestedStack {
     });
     /* Generate streams website dynamically using Lambda and the API Gateway URL generated above  */
     const streamsGenerator = new lambda.Function(this, 'streamsGenerator', {
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset('./resources/custom-resources/frontend-generator'),
       handler: 'frontendGenerator.handler',
-      timeout: cdk.Duration.minutes(2),
+      timeout: Duration.minutes(2),
       memorySize: 3000,
     });
 
@@ -73,11 +72,12 @@ export class StreamsGeneratorStack extends cfn.NestedStack {
     const provider = new customResources.Provider(this, 'StreamsWebsiteProvider', {
       onEventHandler: streamsGenerator,
     });
-    const streamsGeneratorResource = new cdk.CustomResource(this, 'StreamsWebsiteGenerator', {
+    const streamsGeneratorResource = new CustomResource(this, 'StreamsWebsiteGenerator', {
       serviceToken: provider.serviceToken,
       properties: propertyMap,
     });
     streamsGeneratorResource.node.addDependency(streamsDeployment);
+
     this.customResource = streamsGeneratorResource;
   }
 }

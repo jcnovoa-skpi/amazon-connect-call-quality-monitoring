@@ -1,0 +1,145 @@
+{
+    "resource": "/callreport",
+    "path": "/callreport",
+    "httpMethod": "POST",
+    "headers": {
+        "Accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+        "cache-control": "no-cache",
+        "CloudFront-Forwarded-Proto": "https",
+        "CloudFront-Is-Desktop-Viewer": "true",
+        "CloudFront-Is-Mobile-Viewer": "false",
+        "CloudFront-Is-SmartTV-Viewer": "false",
+        "CloudFront-Is-Tablet-Viewer": "false",
+        "CloudFront-Viewer-Country": "AU",
+        "content-type": "application/json",
+        "Host": "mkv90748ah.execute-api.ap-southeast-2.amazonaws.com",
+        "origin": "https://d17oxlqm6he5uz.cloudfront.net",
+        "pragma": "no-cache",
+        "Referer": "https://d17oxlqm6he5uz.cloudfront.net/",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "cross-site",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+        "Via": "2.0 5ebaca8d6e5215e8aae2e8c7eead166f.cloudfront.net (CloudFront)",
+        "X-Amz-Cf-Id": "sXJAJzTUdJ2IkqwcXzSz9JPaxT7WvmQRD6Bne4Ax5Mn9ZivMIgBukg==",
+        "X-Amzn-Trace-Id": "Root=1-5e9da139-2ca26ac06aea9a00820b1ac0",
+        "X-Forwarded-For": "54.240.193.1, 64.252.187.143",
+        "X-Forwarded-Port": "443",
+        "X-Forwarded-Proto": "https"
+    },
+    "multiValueHeaders": {
+        "Accept": [
+            "*/*"
+        ],
+        "accept-encoding": [
+            "gzip, deflate, br"
+        ],
+        "Accept-Language": [
+            "en-GB,en-US;q=0.9,en;q=0.8"
+        ],
+        "cache-control": [
+            "no-cache"
+        ],
+        "CloudFront-Forwarded-Proto": [
+            "https"
+        ],
+        "CloudFront-Is-Desktop-Viewer": [
+            "true"
+        ],
+        "CloudFront-Is-Mobile-Viewer": [
+            "false"
+        ],
+        "CloudFront-Is-SmartTV-Viewer": [
+            "false"
+        ],
+        "CloudFront-Is-Tablet-Viewer": [
+            "false"
+        ],
+        "CloudFront-Viewer-Country": [
+            "AU"
+        ],
+        "content-type": [
+            "application/json"
+        ],
+        "Host": [
+            "mkv90748ah.execute-api.ap-southeast-2.amazonaws.com"
+        ],
+        "origin": [
+            "https://d17oxlqm6he5uz.cloudfront.net"
+        ],
+        "pragma": [
+            "no-cache"
+        ],
+        "Referer": [
+            "https://d17oxlqm6he5uz.cloudfront.net/"
+        ],
+        "sec-fetch-dest": [
+            "empty"
+        ],
+        "sec-fetch-mode": [
+            "cors"
+        ],
+        "sec-fetch-site": [
+            "cross-site"
+        ],
+        "User-Agent": [
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        ],
+        "Via": [
+            "2.0 5ebaca8d6e5215e8aae2e8c7eead166f.cloudfront.net (CloudFront)"
+        ],
+        "X-Amz-Cf-Id": [
+            "sXJAJzTUdJ2IkqwcXzSz9JPaxT7WvmQRD6Bne4Ax5Mn9ZivMIgBukg=="
+        ],
+        "X-Amzn-Trace-Id": [
+            "Root=1-5e9da139-2ca26ac06aea9a00820b1ac0"
+        ],
+        "X-Forwarded-For": [
+            "54.240.193.1, 64.252.187.143"
+        ],
+        "X-Forwarded-Port": [
+            "443"
+        ],
+        "X-Forwarded-Proto": [
+            "https"
+        ]
+    },
+    "queryStringParameters": "",
+    "multiValueQueryStringParameters": "",
+    "pathParameters": "",
+    "stageVariables": "",
+    "requestContext": {
+        "resourceId": "9257ow",
+        "resourcePath": "/callreport",
+        "httpMethod": "POST",
+        "extendedRequestId": "LSYhEEQ8SwMFlHA=",
+        "requestTime": "20/Apr/2020:13:18:49 +0000",
+        "path": "/prod//callreport",
+        "accountId": "228438115886",
+        "protocol": "HTTP/1.1",
+        "stage": "prod",
+        "domainPrefix": "mkv90748ah",
+        "requestTimeEpoch": 1587388729904,
+        "requestId": "760c0f65-2406-4c23-bb8d-219f5a14fd07",
+        "identity": {
+            "cognitoIdentityPoolId": "",
+            "accountId": "",
+            "cognitoIdentityId": "",
+            "caller": "",
+            "sourceIp": "54.240.193.1",
+            "principalOrgId": "",
+            "accessKey": "",
+            "cognitoAuthenticationType": "",
+            "cognitoAuthenticationProvider": "",
+            "userArn": "",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+            "user": ""
+        },
+        "domainName": "mkv90748ah.execute-api.ap-southeast-2.amazonaws.com",
+        "apiId": "mkv90748ah"
+    },
+    "body": "{\"agent\":\"taylorzr\",\"hierarchyL1\":\"Australia\",\"hierarchyL2\":\"Victoria\",\"hierarchyL3\":\"Melbourne\",\"hierarchyL4\":\"3000\",\"hierarchyL5\":\"Carlton\",\"agentPrivateIp\":\"192.168.0.7\",\"callConfigJson\":\"{\\\"signalingEndpoint\\\":\\\"wss: //rtc.connect-telecom.ap-southeast-2.amazonaws.com/LilyRTC\\\",\\\"iceServers\\\":[{\\\"urls\\\":[\\\"turn: turnnlb-93f2de0c97c4316b.elb.ap-southeast-2.amazonaws.com.: 3478?transport=udp\\\"],\\\"username\\\":\\\"1587388746: 0675e0d4-5e37-4399-83ca-3ba84503d7a6\\\",\\\"credential\\\":\\\"lmSomag5iXQO3jvKedm7hbnaWdg=\\\",\\\"sessionToken\\\":\\\"{ \\\\\\\"internalIp\\\\\\\": \\\\\\\"10.4.17.165\\\\\\\" }\\\"}],\\\"protocol\\\":\\\"LilyRTC/1.0/WSS\\\",\\\"useWebSocketProvider\\\":true}\",\"numberofCpu\":4,\"localDeviceMemoryLimit\":8,\"agentBrowserName\":\"Chrome\",\"agentBrowserversion\":\"80.0.3987.163\",\"contactId\":\"6b7020d5-8c7b-4bcb-9a2e-6fa96ac5e531\",\"report\":{\"callStartTime\":\"2020-04-20T13:18:47.831Z\",\"callEndTime\":\"2020-04-20T13:18:49.809Z\",\"gumTimeMillis\":16,\"initializationTimeMillis\":45,\"iceCollectionTimeMillis\":171,\"signallingConnectTimeMillis\":2,\"handshakingTimeMillis\":472,\"preTalkingTimeMillis\":522,\"talkingTimeMillis\":1453,\"cleanupTimeMillis\":null,\"iceCollectionFailure\":false,\"signallingConnectionFailure\":false,\"handshakingFailure\":false,\"gumOtherFailure\":false,\"gumTimeoutFailure\":false,\"createOfferFailure\":false,\"setLocalDescriptionFailure\":false,\"userBusyFailure\":false,\"invalidRemoteSDPFailure\":false,\"noRemoteIceCandidateFailure\":false,\"setRemoteDescriptionFailure\":false,\"softphoneStreamStatistics\":[{\"softphoneStreamType\":\"audio_input\",\"timestamp\":\"2020-04-20T13:18:49.356Z\",\"packetsLost\":0,\"packetsCount\":38,\"audioLevel\":10471},{\"softphoneStreamType\":\"audio_output\",\"timestamp\":\"2020-04-20T13: 18: 49.357Z\",\"packetsLost\":0,\"packetsCount\":47,\"audioLevel\":3}]}}",
+    "isBase64Encoded": false
+}

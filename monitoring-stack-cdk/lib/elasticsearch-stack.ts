@@ -1,13 +1,13 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import * as cfn from '@aws-cdk/aws-cloudformation';
-import * as cdk from '@aws-cdk/core';
-import * as cognito from '@aws-cdk/aws-cognito';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as elasticsearch from '@aws-cdk/aws-elasticsearch';
-import * as customResources from '@aws-cdk/custom-resources';
+import { NestedStack, Stack, Duration, CustomResource, Fn } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as opensearch from 'aws-cdk-lib/aws-opensearchservice';
+import * as customResources from 'aws-cdk-lib/custom-resources';
 
 export interface ElasticsearchStackProps {
   ccpUrl: string,
@@ -24,27 +24,27 @@ interface ElasticsearchStackIamResources {
   elasticsearchAccessPolicy: iam.PolicyDocument
 }
 
-export class ElasticSearchStack extends cfn.NestedStack {
+export class ElasticSearchStack extends NestedStack {
   private ccpUrl: string;
 
   private ccpName: string;
 
   public elasticsearchArn: string;
 
-  private elasticsearchDomain: elasticsearch.CfnDomain;
+  private opensearchDomain: opensearch.CfnDomain;
 
   private cognitoPools: CognitoPoolStore;
 
-  constructor(scope: cdk.Construct, id: string, props: ElasticsearchStackProps) {
+  constructor(scope: Construct, id: string, props: ElasticsearchStackProps) {
     super(scope, id);
     
     if(process.env.ES_DOMAIN_ENDPOINT != undefined) {
       //future releases should have both paths use the Domain construct
-      this.elasticsearchArn = elasticsearch.Domain.fromDomainEndpoint(this, "Existing Domain", process.env.ES_DOMAIN_ENDPOINT).domainArn.replace('search-', '');
+      this.elasticsearchArn = opensearch.Domain.fromDomainEndpoint(this, "Existing Domain", process.env.ES_DOMAIN_ENDPOINT).domainArn.replace('search-', '');
     } else {
       this.ccpUrl = props.ccpUrl;
-      // get a unique suffix from the second to last element of the stackId, e.g. 9e3a
-      const suffix = cdk.Fn.select(3, cdk.Fn.split('-', cdk.Fn.select(2, cdk.Fn.split('/', this.stackId))));
+      // get a unique suffix from the stackId
+      const suffix = Fn.select(3, Fn.split('-', Fn.select(2, Fn.split('/', this.stackId))));
       
       // Get the name of the connect instance from the ccp url
       
@@ -73,11 +73,11 @@ export class ElasticSearchStack extends cfn.NestedStack {
       }
       this.cognitoPools = this.createCognitoPools(suffix);
       const iamResources = this.createIamResources(this.cognitoPools.identityPool);
-      this.elasticsearchDomain = this.createElasticsearchDomain(
+      this.opensearchDomain = this.createElasticsearchDomain(
         this.cognitoPools,
         iamResources,
       );
-      this.elasticsearchArn = this.elasticsearchDomain.attrArn;
+      this.elasticsearchArn = this.opensearchDomain.attrArn;
     }
   }
 
@@ -116,20 +116,27 @@ export class ElasticSearchStack extends cfn.NestedStack {
     });
 
     const esRole = new iam.Role(this, 'esRole', {
-      assumedBy: new iam.ServicePrincipal('es.amazonaws.com'),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonESCognitoAccess')],
+      assumedBy: new iam.ServicePrincipal('opensearch.amazonaws.com'),
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonOpenSearchServiceCognitoAccess')],
     });
+
+    // Add a trust relationship to allow OpenSearch to assume the role
+    esRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['sts:AssumeRole'],
+      resources: ['*']
+    }));
 
     const policy = new iam.PolicyDocument();
     policy.addStatements(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         principals: [
-          new iam.AccountPrincipal(cdk.Stack.of(this).account),
+          new iam.AccountPrincipal(Stack.of(this).account),
           new iam.ArnPrincipal(authRole.roleArn),
         ],
         actions: ['es:*'],
-        resources: [`arn:aws:es:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:domain/*/*`],
+        resources: [`arn:aws:es:${Stack.of(this).region}:${Stack.of(this).account}:domain/*/*`],
       }),
     );
 
@@ -151,91 +158,96 @@ export class ElasticSearchStack extends cfn.NestedStack {
     cognitoPools: CognitoPoolStore,
     iamResources: ElasticsearchStackIamResources,
   ) {
-    const elasticsearchDomain = new elasticsearch.CfnDomain(this, 'ElasticsearchDomain', {
+    const opensearchDomain = new opensearch.CfnDomain(this, 'OpenSearchDomain', {
       accessPolicies: iamResources.elasticsearchAccessPolicy,
       encryptionAtRestOptions: {
         enabled: true,
       },
       ebsOptions: {
         ebsEnabled: true,
-        volumeSize: 1000,
+        volumeSize: 100, // Reduced from 1000 for faster deployment
         volumeType: 'gp2',
       },
-      elasticsearchClusterConfig: {
+      engineVersion: 'OpenSearch_2.5',
+      clusterConfig: {
         dedicatedMasterCount: 3,
         dedicatedMasterEnabled: true,
-        dedicatedMasterType: 'c5.large.elasticsearch',
-        instanceCount: 3,
-        instanceType: 'r5.2xlarge.elasticsearch',
+        dedicatedMasterType: 'c5.large.search',
+        instanceCount: 2, // Reduced from 3 for faster deployment
+        instanceType: 'r5.large.search', // Changed from r5.2xlarge for faster deployment
         zoneAwarenessEnabled: true,
         zoneAwarenessConfig: {
-          availabilityZoneCount: 3,
+          availabilityZoneCount: 2, // Changed from 3 to match instanceCount
         },
       },
-      elasticsearchVersion: '7.9',
+      domainEndpointOptions: {
+        enforceHttps: true,
+        tlsSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+      },
+      cognitoOptions: {
+        enabled: true,
+        identityPoolId: cognitoPools.identityPool,
+        roleArn: iamResources.esRole.roleArn,
+        userPoolId: cognitoPools.userPool
+      }
     });
 
-    elasticsearchDomain.addPropertyOverride('CognitoOptions.Enabled', true);
-    elasticsearchDomain.addPropertyOverride('CognitoOptions.IdentityPoolId', cognitoPools.identityPool);
-    elasticsearchDomain.addPropertyOverride('CognitoOptions.RoleArn', iamResources.esRole.roleArn);
-    elasticsearchDomain.addPropertyOverride('CognitoOptions.UserPoolId', cognitoPools.userPool);
-
-    this.configureElasticsearchDomain(elasticsearchDomain);
-    return elasticsearchDomain;
+    this.configureElasticsearchDomain(opensearchDomain);
+    return opensearchDomain;
   }
 
   public getUserCreateUrl() {
     return this.cognitoPools ?
-      `https://${this.region}.console.aws.amazon.com/cognito/users?region=${this.region}#/pool/${this.cognitoPools.userPool}/users`
+      `https://${Stack.of(this).region}.console.aws.amazon.com/cognito/users?region=${Stack.of(this).region}#/pool/${this.cognitoPools.userPool}/users`
       : 'Cognito User Pools are not deployed for existing ES domains';
   }
 
   public getKibanaUrl() {
     const domainEndpoint = process.env.ES_DOMAIN_ENDPOINT ? 
       process.env.ES_DOMAIN_ENDPOINT
-      : this.elasticsearchDomain.attrDomainEndpoint;
-    return `https://${domainEndpoint}/_plugin/kibana/`;
+      : this.opensearchDomain.attrDomainEndpoint;
+    return `https://${domainEndpoint}/_dashboards/`;
   }
 
-  private configureElasticsearchDomain(elasticsearchDomain: elasticsearch.CfnDomain) {
+  private configureElasticsearchDomain(opensearchDomain: opensearch.CfnDomain) {
     /*
     * Create our provider Lambda for the custom resource. This Lambda is responsible for configuring
-    * our Kibana instance and updating relevant ES options (for example, configuring an ingest node)
+    * our OpenSearch Dashboards instance and updating relevant OpenSearch options (for example, configuring an ingest node)
     */
-    const elasticsearchConfiurationLambda = new lambda.Function(this, 'ElasticsearchConfigurationLambda', {
-      runtime: lambda.Runtime.NODEJS_12_X,
+    const opensearchConfiurationLambda = new lambda.Function(this, 'OpenSearchConfigurationLambda', {
+      runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset('./resources/custom-resources/kibana-config'),
-      handler: 'kibanaConfigurer.handler',
-      timeout: cdk.Duration.seconds(100),
+      handler: 'elasticsearchResource.handler',
+      timeout: Duration.seconds(100),
       memorySize: 3000,
       environment: {
-        Region: cdk.Stack.of(this).region,
+        Region: Stack.of(this).region,
       },
     });
-    const esFullAccessPolicy = iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonESFullAccess');
-        elasticsearchConfiurationLambda.role?.addManagedPolicy(esFullAccessPolicy);
+    const osFullAccessPolicy = iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonOpenSearchServiceFullAccess');
+        opensearchConfiurationLambda.role?.addManagedPolicy(osFullAccessPolicy);
 
         // construct event to be passed to AWS Lambda
-        const esPropertyMap = {};
-        Object.defineProperties(esPropertyMap,
+        const osPropertyMap = {};
+        Object.defineProperties(osPropertyMap,
           {
-            ElasticsearchObject: {
+            OpenSearchObject: {
               enumerable: true,
-              value: elasticsearchDomain.elasticsearchClusterConfig,
+              value: opensearchDomain.clusterConfig,
             },
-            ElasticsearchDomain: {
+            OpenSearchDomain: {
               enumerable: true,
-              value: elasticsearchDomain.attrDomainEndpoint,
+              value: opensearchDomain.attrDomainEndpoint,
             },
           });
 
-        const provider = new customResources.Provider(this, 'Elasticsearch Provider', {
-          onEventHandler: elasticsearchConfiurationLambda,
+        const provider = new customResources.Provider(this, 'OpenSearch Provider', {
+          onEventHandler: opensearchConfiurationLambda,
         });
-        const elasticsearchConfiguration = new cdk.CustomResource(this, 'ElasticsearchSetup', {
+        const opensearchConfiguration = new CustomResource(this, 'OpenSearchSetup', {
           serviceToken: provider.serviceToken,
-          properties: esPropertyMap,
+          properties: osPropertyMap,
         });
-        elasticsearchConfiguration.node.addDependency(elasticsearchDomain);
+        opensearchConfiguration.node.addDependency(opensearchDomain);
   }
 }

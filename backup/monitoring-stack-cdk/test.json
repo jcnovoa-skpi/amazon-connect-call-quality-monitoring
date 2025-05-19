@@ -1,0 +1,603 @@
+Resources:
+  StreamsBucket558B3AFE:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      WebsiteConfiguration:
+        IndexDocument: index.html
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/StreamsBucket/Resource
+  StreamsBucketPolicy2B7B70A0:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: StreamsBucket558B3AFE
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - StreamsBucketOAI0493AED0
+                  - S3CanonicalUserId
+            Resource:
+              - Fn::GetAtt:
+                  - StreamsBucket558B3AFE
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - StreamsBucket558B3AFE
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/StreamsBucket/Policy/Resource
+  StreamsBucketOAI0493AED0:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Allows CloudFront to reach the bucket
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/StreamsBucketOAI/Resource
+  StreamsDistributionCFDistribution7352F2F3:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          TargetOriginId: origin1
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            DomainName:
+              Fn::GetAtt:
+                - StreamsBucket558B3AFE
+                - RegionalDomainName
+            Id: origin1
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                  - ""
+                  - - origin-access-identity/cloudfront/
+                    - Ref: StreamsBucketOAI0493AED0
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/StreamsDistribution/CFDistribution
+  ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join:
+          - ""
+          - - https://s3.
+            - Ref: AWS::Region
+            - "."
+            - Ref: AWS::URLSuffix
+            - /
+            - Ref: AssetParameters68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674S3BucketB0964833
+            - /
+            - Fn::Select:
+                - 0
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674S3VersionKey77DFC6C0
+            - Fn::Select:
+                - 1
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674S3VersionKey77DFC6C0
+      Parameters:
+        referencetoConnectMonitoringStackAssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150S3Bucket4E491DABRef:
+          Ref: AssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150S3Bucket0639A9DF
+        referencetoConnectMonitoringStackAssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150S3VersionKey76EC64AARef:
+          Ref: AssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150S3VersionKey6DA656C0
+        referencetoConnectMonitoringStackAssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket6E43F6D1Ref:
+          Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket24A39C33
+        referencetoConnectMonitoringStackAssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey54583B6ARef:
+          Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/ElasticsearchStack.NestedStack/ElasticsearchStack.NestedStackResource
+  MetricsApiStackNestedStackMetricsApiStackNestedStackResourceB7414866:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join:
+          - ""
+          - - https://s3.
+            - Ref: AWS::Region
+            - "."
+            - Ref: AWS::URLSuffix
+            - /
+            - Ref: AssetParameters7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202beaS3Bucket3F9D3FD1
+            - /
+            - Fn::Select:
+                - 0
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202beaS3VersionKey15821526
+            - Fn::Select:
+                - 1
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202beaS3VersionKey15821526
+      Parameters:
+        referencetoConnectMonitoringStackAssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaS3Bucket4EB9BC6ERef:
+          Ref: AssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaS3BucketB94218E9
+        referencetoConnectMonitoringStackAssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaS3VersionKey16043960Ref:
+          Ref: AssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaS3VersionKey58084BF4
+        referencetoConnectMonitoringStackElasticsearchStackNestedStackElasticsearchStackNestedStackResource7C6DC8D4OutputsConnectMonitoringStackElasticsearchStackElasticsearchDomain5FA42444Arn:
+          Fn::GetAtt:
+            - ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18
+            - Outputs.ConnectMonitoringStackElasticsearchStackElasticsearchDomain5FA42444Arn
+        referencetoConnectMonitoringStackAssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1S3BucketA6359253Ref:
+          Ref: AssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1S3Bucket5A776443
+        referencetoConnectMonitoringStackAssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1S3VersionKey38228C86Ref:
+          Ref: AssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1S3VersionKeyF2CC15F7
+        referencetoConnectMonitoringStackElasticsearchStackNestedStackElasticsearchStackNestedStackResource7C6DC8D4OutputsConnectMonitoringStackElasticsearchStackElasticsearchDomain5FA42444DomainEndpoint:
+          Fn::GetAtt:
+            - ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18
+            - Outputs.ConnectMonitoringStackElasticsearchStackElasticsearchDomain5FA42444DomainEndpoint
+        referencetoConnectMonitoringStackStreamsDistributionCFDistribution1A8E286BDomainName:
+          Fn::GetAtt:
+            - StreamsDistributionCFDistribution7352F2F3
+            - DomainName
+        referencetoConnectMonitoringStackAssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6S3Bucket5FFF5195Ref:
+          Ref: AssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6S3BucketB8066957
+        referencetoConnectMonitoringStackAssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6S3VersionKey3D7BCF38Ref:
+          Ref: AssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6S3VersionKey68F188D3
+        referencetoConnectMonitoringStackAssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636S3BucketE1F949CCRef:
+          Ref: AssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636S3Bucket34B6589E
+        referencetoConnectMonitoringStackAssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636S3VersionKeyCE85B3A1Ref:
+          Ref: AssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636S3VersionKeyE499BC98
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/MetricsApiStack.NestedStack/MetricsApiStack.NestedStackResource
+  DynamicFrontendStackNestedStackDynamicFrontendStackNestedStackResource2FC1EA5E:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join:
+          - ""
+          - - https://s3.
+            - Ref: AWS::Region
+            - "."
+            - Ref: AWS::URLSuffix
+            - /
+            - Ref: AssetParameters1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836S3Bucket75B39B7D
+            - /
+            - Fn::Select:
+                - 0
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836S3VersionKeyF7116FC8
+            - Fn::Select:
+                - 1
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836S3VersionKeyF7116FC8
+      Parameters:
+        referencetoConnectMonitoringStackAssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cS3BucketA41D2D62Ref:
+          Ref: AssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cS3Bucket8F3504CF
+        referencetoConnectMonitoringStackAssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cS3VersionKeyCF44AC91Ref:
+          Ref: AssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cS3VersionKeyA9CC9E10
+        referencetoConnectMonitoringStackStreamsBucket92ED4097Ref:
+          Ref: StreamsBucket558B3AFE
+        referencetoConnectMonitoringStackStreamsDistributionCFDistribution1A8E286BRef:
+          Ref: StreamsDistributionCFDistribution7352F2F3
+        referencetoConnectMonitoringStackStreamsBucket92ED4097Arn:
+          Fn::GetAtt:
+            - StreamsBucket558B3AFE
+            - Arn
+        referencetoConnectMonitoringStackAssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50S3Bucket3345D03CRef:
+          Ref: AssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50S3BucketB6159468
+        referencetoConnectMonitoringStackAssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50S3VersionKey04AF437FRef:
+          Ref: AssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50S3VersionKey2060CAC0
+        referencetoConnectMonitoringStackAssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caS3BucketEFCCB31CRef:
+          Ref: AssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caS3BucketF3A799CD
+        referencetoConnectMonitoringStackAssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caS3VersionKeyD9016702Ref:
+          Ref: AssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caS3VersionKey6E167909
+        referencetoConnectMonitoringStackAssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket6E43F6D1Ref:
+          Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket24A39C33
+        referencetoConnectMonitoringStackAssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey54583B6ARef:
+          Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8
+        referencetoConnectMonitoringStackMetricsApiStackNestedStackMetricsApiStackNestedStackResourceD069CA24OutputsConnectMonitoringStackMetricsApiStackElasticsearchApi67B7DBD1Ref:
+          Fn::GetAtt:
+            - MetricsApiStackNestedStackMetricsApiStackNestedStackResourceB7414866
+            - Outputs.ConnectMonitoringStackMetricsApiStackElasticsearchApi67B7DBD1Ref
+        referencetoConnectMonitoringStackMetricsApiStackNestedStackMetricsApiStackNestedStackResourceD069CA24OutputsConnectMonitoringStackMetricsApiStackElasticsearchApiDeploymentStageprodCC93B5E1Ref:
+          Fn::GetAtt:
+            - MetricsApiStackNestedStackMetricsApiStackNestedStackResourceB7414866
+            - Outputs.ConnectMonitoringStackMetricsApiStackElasticsearchApiDeploymentStageprodCC93B5E1Ref
+        referencetoConnectMonitoringStackStreamsBucket92ED4097WebsiteURL:
+          Fn::GetAtt:
+            - StreamsBucket558B3AFE
+            - WebsiteURL
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/DynamicFrontendStack.NestedStack/DynamicFrontendStack.NestedStackResource
+  SARCustomResourceConfirmerServiceRole4535E43F:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    DependsOn:
+      - DynamicFrontendStackNestedStackDynamicFrontendStackNestedStackResource2FC1EA5E
+      - ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18
+      - MetricsApiStackNestedStackMetricsApiStackNestedStackResourceB7414866
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/SAR Custom Resource Confirmer/ServiceRole/Resource
+  SARCustomResourceConfirmerBE6D641C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersd0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341S3Bucket245934BB
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersd0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341S3VersionKey0E15B305
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersd0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341S3VersionKey0E15B305
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - SARCustomResourceConfirmerServiceRole4535E43F
+          - Arn
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          CFN_RESPONSE_PAYLOAD: ""
+          COGNITO_URL:
+            Fn::Join:
+              - ""
+              - - https://
+                - Ref: AWS::Region
+                - .console.aws.amazon.com/cognito/users?region=
+                - Ref: AWS::Region
+                - "#/pool/"
+                - Fn::GetAtt:
+                    - ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18
+                    - Outputs.ConnectMonitoringStackElasticsearchStackuserPool699A50A3Ref
+                - /users
+          KIBANA_URL:
+            Fn::Join:
+              - ""
+              - - https://
+                - Fn::GetAtt:
+                    - ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18
+                    - Outputs.ConnectMonitoringStackElasticsearchStackElasticsearchDomain5FA42444DomainEndpoint
+                - /_plugin/kibana/
+          CLOUDFRONT_URL:
+            Fn::GetAtt:
+              - StreamsDistributionCFDistribution7352F2F3
+              - DomainName
+      Timeout: 120
+    DependsOn:
+      - DynamicFrontendStackNestedStackDynamicFrontendStackNestedStackResource2FC1EA5E
+      - ElasticsearchStackNestedStackElasticsearchStackNestedStackResource88491B18
+      - MetricsApiStackNestedStackMetricsApiStackNestedStackResourceB7414866
+      - SARCustomResourceConfirmerServiceRole4535E43F
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/SAR Custom Resource Confirmer/Resource
+      aws:asset:path: asset.d0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341
+      aws:asset:property: Code
+  SARCustomResourceConfirmerProviderframeworkonEventServiceRoleE887C6E8:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/SAR Custom Resource Confirmer Provider/framework-onEvent/ServiceRole/Resource
+  SARCustomResourceConfirmerProviderframeworkonEventServiceRoleDefaultPolicy9F03FD0B:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - SARCustomResourceConfirmerBE6D641C
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: SARCustomResourceConfirmerProviderframeworkonEventServiceRoleDefaultPolicy9F03FD0B
+      Roles:
+        - Ref: SARCustomResourceConfirmerProviderframeworkonEventServiceRoleE887C6E8
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/SAR Custom Resource Confirmer Provider/framework-onEvent/ServiceRole/DefaultPolicy/Resource
+  SARCustomResourceConfirmerProviderframeworkonEvent90E38D70:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket24A39C33
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8
+      Handler: framework.onEvent
+      Role:
+        Fn::GetAtt:
+          - SARCustomResourceConfirmerProviderframeworkonEventServiceRoleE887C6E8
+          - Arn
+      Runtime: nodejs10.x
+      Description: AWS CDK resource provider framework - onEvent (ConnectMonitoringStack/SAR Custom Resource Confirmer Provider)
+      Environment:
+        Variables:
+          USER_ON_EVENT_FUNCTION_ARN:
+            Fn::GetAtt:
+              - SARCustomResourceConfirmerBE6D641C
+              - Arn
+      Timeout: 900
+    DependsOn:
+      - SARCustomResourceConfirmerProviderframeworkonEventServiceRoleDefaultPolicy9F03FD0B
+      - SARCustomResourceConfirmerProviderframeworkonEventServiceRoleE887C6E8
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/SAR Custom Resource Confirmer Provider/framework-onEvent/Resource
+      aws:asset:path: asset.7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a
+      aws:asset:property: Code
+  SARCustomResourceConfirmerTrigger:
+    Type: AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - SARCustomResourceConfirmerProviderframeworkonEvent90E38D70
+          - Arn
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: ConnectMonitoringStack/SAR Custom Resource Confirmer Trigger/Default
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.74.0,@aws-cdk/assets=1.61.1,@aws-cdk/aws-apigateway=1.61.1,@aws-cdk/aws-applicationautoscaling=1.61.1,@aws-cdk/aws-autoscaling-common=1.61.1,@aws-cdk/aws-certificatemanager=1.61.1,@aws-cdk/aws-cloudformation=1.61.1,@aws-cdk/aws-cloudfront=1.61.1,@aws-cdk/aws-cloudwatch=1.61.1,@aws-cdk/aws-codeguruprofiler=1.61.1,@aws-cdk/aws-cognito=1.61.1,@aws-cdk/aws-ec2=1.61.1,@aws-cdk/aws-elasticsearch=1.61.1,@aws-cdk/aws-events=1.61.1,@aws-cdk/aws-iam=1.61.1,@aws-cdk/aws-kms=1.61.1,@aws-cdk/aws-lambda=1.61.1,@aws-cdk/aws-logs=1.61.1,@aws-cdk/aws-s3=1.61.1,@aws-cdk/aws-s3-assets=1.61.1,@aws-cdk/aws-s3-deployment=1.61.1,@aws-cdk/aws-sqs=1.61.1,@aws-cdk/aws-ssm=1.61.1,@aws-cdk/cloud-assembly-schema=1.61.1,@aws-cdk/core=1.61.1,@aws-cdk/custom-resources=1.61.1,@aws-cdk/cx-api=1.61.1,@aws-cdk/region-info=1.61.1,jsii-runtime=node.js/v12.14.1
+    Condition: CDKMetadataAvailable
+Parameters:
+  AssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150S3Bucket0639A9DF:
+    Type: String
+    Description: S3 bucket for asset "48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150"
+  AssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150S3VersionKey6DA656C0:
+    Type: String
+    Description: S3 key for asset version "48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150"
+  AssetParameters48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150ArtifactHash0E8B9DED:
+    Type: String
+    Description: Artifact hash for asset "48bb34fb6db87499c316387bab54df8e5e11b3625556501bf001b32708dbb150"
+  AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket24A39C33:
+    Type: String
+    Description: S3 bucket for asset "7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a"
+  AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8:
+    Type: String
+    Description: S3 key for asset version "7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a"
+  AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aArtifactHash84962CBE:
+    Type: String
+    Description: Artifact hash for asset "7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a"
+  AssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaS3BucketB94218E9:
+    Type: String
+    Description: S3 bucket for asset "686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfba"
+  AssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaS3VersionKey58084BF4:
+    Type: String
+    Description: S3 key for asset version "686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfba"
+  AssetParameters686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfbaArtifactHash9E1DE1AC:
+    Type: String
+    Description: Artifact hash for asset "686914e4fb69eb0a57464fe869cf5f8d7df17dbf19d420ebeeb3b2efecf9dfba"
+  AssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1S3Bucket5A776443:
+    Type: String
+    Description: S3 bucket for asset "1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1"
+  AssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1S3VersionKeyF2CC15F7:
+    Type: String
+    Description: S3 key for asset version "1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1"
+  AssetParameters1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1ArtifactHashC8A4E62D:
+    Type: String
+    Description: Artifact hash for asset "1619b527a0af6b14892aafa6e58994e7efdb422fbcbdab72bba45fbbb767cdb1"
+  AssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6S3BucketB8066957:
+    Type: String
+    Description: S3 bucket for asset "407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6"
+  AssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6S3VersionKey68F188D3:
+    Type: String
+    Description: S3 key for asset version "407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6"
+  AssetParameters407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6ArtifactHash8F6F63BA:
+    Type: String
+    Description: Artifact hash for asset "407d7f01064525fe1903cf16de5b333e114ce6d880288ccbe305f48e5d652ce6"
+  AssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636S3Bucket34B6589E:
+    Type: String
+    Description: S3 bucket for asset "7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636"
+  AssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636S3VersionKeyE499BC98:
+    Type: String
+    Description: S3 key for asset version "7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636"
+  AssetParameters7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636ArtifactHashB8CDAE94:
+    Type: String
+    Description: Artifact hash for asset "7538f2c2b6f01e2eed49c75def8614a415fc72922ee6de4832c3a66f23a3c636"
+  AssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50S3BucketB6159468:
+    Type: String
+    Description: S3 bucket for asset "4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50"
+  AssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50S3VersionKey2060CAC0:
+    Type: String
+    Description: S3 key for asset version "4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50"
+  AssetParameters4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50ArtifactHash846130E4:
+    Type: String
+    Description: Artifact hash for asset "4184245adc1f2ed71e1f0ae5719f8fd7f34324b750f1bf06b2fb5cf1f4014f50"
+  AssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cS3Bucket8F3504CF:
+    Type: String
+    Description: S3 bucket for asset "4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746c"
+  AssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cS3VersionKeyA9CC9E10:
+    Type: String
+    Description: S3 key for asset version "4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746c"
+  AssetParameters4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746cArtifactHash03BAE599:
+    Type: String
+    Description: Artifact hash for asset "4418e3a7e2824894ff26b5c150175285a3435ac9c4219a22770face55ba3746c"
+  AssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caS3BucketF3A799CD:
+    Type: String
+    Description: S3 bucket for asset "c8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8ca"
+  AssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caS3VersionKey6E167909:
+    Type: String
+    Description: S3 key for asset version "c8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8ca"
+  AssetParametersc8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8caArtifactHash8D149A4E:
+    Type: String
+    Description: Artifact hash for asset "c8994ac5c3f8921f8f9ac5da5e6578d537d5c414becbacac8b25daf5619cf8ca"
+  AssetParametersd0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341S3Bucket245934BB:
+    Type: String
+    Description: S3 bucket for asset "d0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341"
+  AssetParametersd0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341S3VersionKey0E15B305:
+    Type: String
+    Description: S3 key for asset version "d0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341"
+  AssetParametersd0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341ArtifactHash357187B8:
+    Type: String
+    Description: Artifact hash for asset "d0b0b60095564a73a25651ff296a501c18367a56fc327911295aa31720da3341"
+  AssetParameters68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674S3BucketB0964833:
+    Type: String
+    Description: S3 bucket for asset "68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674"
+  AssetParameters68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674S3VersionKey77DFC6C0:
+    Type: String
+    Description: S3 key for asset version "68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674"
+  AssetParameters68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674ArtifactHash0D543358:
+    Type: String
+    Description: Artifact hash for asset "68d190da2e33a37f238a29f060540ac7a35509c1ce71c49e68fc71c229ac5674"
+  AssetParameters7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202beaS3Bucket3F9D3FD1:
+    Type: String
+    Description: S3 bucket for asset "7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202bea"
+  AssetParameters7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202beaS3VersionKey15821526:
+    Type: String
+    Description: S3 key for asset version "7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202bea"
+  AssetParameters7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202beaArtifactHashF4E6064D:
+    Type: String
+    Description: Artifact hash for asset "7d28bb42f4906b731b22632e9bf6363f0152f8ad46c818be44b0857ae6202bea"
+  AssetParameters1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836S3Bucket75B39B7D:
+    Type: String
+    Description: S3 bucket for asset "1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836"
+  AssetParameters1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836S3VersionKeyF7116FC8:
+    Type: String
+    Description: S3 key for asset version "1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836"
+  AssetParameters1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836ArtifactHashCAE3E49E:
+    Type: String
+    Description: Artifact hash for asset "1289a0638dacc3d05145480d8ea613c437de2dbdc90194ada110ad658c74c836"
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+

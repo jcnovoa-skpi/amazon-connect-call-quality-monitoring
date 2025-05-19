@@ -1,0 +1,1 @@
+{"name":"frontend-generator","version":"1.0.0","description":"Frontend generator Lambda","main":"frontendGenerator.js","dependencies":{"aws-sdk":"^2.1502.0"}}
