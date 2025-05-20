@@ -115,12 +115,13 @@ export class ElasticSearchStack extends NestedStack {
       }, 'sts:AssumeRoleWithWebIdentity'),
     });
 
+    // Create a role that can be assumed by the OpenSearch service
     const esRole = new iam.Role(this, 'esRole', {
-      assumedBy: new iam.ServicePrincipal('opensearch.amazonaws.com'),
+      assumedBy: new iam.ServicePrincipal('opensearchservice.amazonaws.com'),
       managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonOpenSearchServiceCognitoAccess')],
     });
 
-    // Add a trust relationship to allow OpenSearch to assume the role
+    // Add a trust relationship to allow OpenSearch Service to assume the role
     esRole.addToPolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['sts:AssumeRole'],
@@ -134,6 +135,7 @@ export class ElasticSearchStack extends NestedStack {
         principals: [
           new iam.AccountPrincipal(Stack.of(this).account),
           new iam.ArnPrincipal(authRole.roleArn),
+          new iam.ServicePrincipal('opensearchservice.amazonaws.com')
         ],
         actions: ['es:*'],
         resources: [`arn:aws:es:${Stack.of(this).region}:${Stack.of(this).account}:domain/*/*`],
